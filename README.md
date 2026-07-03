@@ -101,7 +101,21 @@ Show workspace stats:
 context stats --db-path .\data\contextos.sqlite3
 ```
 
+## Tested Local Workflow
+
+The integration test suite verifies this local-only workflow with one temporary SQLite database and no real AI adapter call:
+
+```powershell
+context import .\docs --db-path .\data\contextos.sqlite3
+context search "context selection" --top-k 5 --db-path .\data\contextos.sqlite3
+context ask "What matters most?" --dry-run --adapter mock --db-path .\data\contextos.sqlite3
+context optimize .\docs\architecture.md --level medium --db-path .\data\contextos.sqlite3
+context stats --db-path .\data\contextos.sqlite3
+```
+
 ## Architecture
+
+The v1.0 architecture is documented in [ContextOS_Architecture.md](ContextOS_Architecture.md).
 
 Indexing flow:
 
@@ -123,7 +137,6 @@ pytest
 
 ## Current Limitations
 
-- `ContextOS_Architecture.md` is not currently present in the repo.
 - Claude and OpenAI adapters are not live API clients yet.
 - Retrieval is intentionally BM25-only.
 - Compression is intentionally rule-based only.

@@ -57,6 +57,21 @@ $env:ANTHROPIC_API_KEY = "your-key"
 
 The current Claude adapter validates configuration but does not yet make live API calls. Use `--adapter mock` for local tests.
 
+## Quick Demo
+
+Run a local demo with the included sample files:
+
+```powershell
+$db = ".\data\demo.sqlite3"
+context import .\sample_data --db-path $db
+context search "context selection" --top-k 3 --db-path $db
+context ask "Why is context selection important?" --dry-run --adapter mock --db-path $db
+context optimize .\sample_data\context_principles.md --level medium --db-path $db
+context stats --db-path $db
+```
+
+This demo stays local and does not call a real AI provider because it uses `--dry-run`.
+
 ## CLI Commands
 
 Show help:
@@ -116,6 +131,7 @@ context stats --db-path .\data\contextos.sqlite3
 ## Architecture
 
 The v1.0 architecture is documented in [ContextOS_Architecture.md](ContextOS_Architecture.md).
+Detailed command examples are in [docs/USAGE.md](docs/USAGE.md), and release limitations are in [docs/LIMITATIONS.md](docs/LIMITATIONS.md).
 
 Indexing flow:
 

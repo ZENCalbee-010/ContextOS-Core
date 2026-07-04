@@ -92,7 +92,7 @@ def validate_settings(settings: AppSettings) -> None:
     """Validate settings that protect the v1.x local-first architecture."""
 
     if settings.retrieval.algorithm != "bm25":
-        raise ConfigurationError("retrieval.algorithm must be 'bm25' in ContextOS Core v1.x")
+        raise ConfigurationError("retrieval.algorithm must be 'bm25' until optional providers are implemented")
     if settings.compression.default_level not in settings.compression.levels:
         raise ConfigurationError("compression.default_level must be one of the configured levels")
     if settings.token_budget.max_tokens <= 0:

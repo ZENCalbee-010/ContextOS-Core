@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="980" height="430" viewBox="0 0 980 430" role="img" aria-label="Mermaid ER diagram of SQLite schema">
+  <style>
+    .table{fill:#f8fafc;stroke:#334155;stroke-width:2;rx:8}
+    .head{font-family:Arial, sans-serif;font-size:16px;font-weight:bold;fill:#0f172a}
+    .text{font-family:Arial, sans-serif;font-size:14px;fill:#334155}
+    .title{font-family:Arial, sans-serif;font-size:20px;font-weight:bold;fill:#0f172a}
+    .rel{stroke:#334155;stroke-width:2;marker-end:url(#arrow)}
+  </style>
+  <defs><marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10z" fill="#334155"/></marker></defs>
+  <text x="24" y="34" class="title">SQLite Memory Schema</text>
+  <rect x="60" y="80" width="230" height="150" class="table"/><text x="82" y="112" class="head">documents</text><text x="82" y="144" class="text">id, filepath, sha256</text><text x="82" y="172" class="text">title, mime_type</text><text x="82" y="200" class="text">metadata_json</text>
+  <rect x="390" y="60" width="240" height="180" class="table"/><text x="412" y="92" class="head">chunks</text><text x="412" y="124" class="text">id, document_id</text><text x="412" y="152" class="text">chunk_index, content</text><text x="412" y="180" class="text">token_count</text><text x="412" y="208" class="text">metadata_json</text>
+  <rect x="390" y="280" width="240" height="120" class="table"/><text x="412" y="312" class="head">summaries</text><text x="412" y="344" class="text">id, document_id</text><text x="412" y="372" class="text">summary, level</text>
+  <rect x="705" y="150" width="230" height="130" class="table"/><text x="727" y="182" class="head">conversation_history</text><text x="727" y="214" class="text">id, role, content</text><text x="727" y="242" class="text">metadata_json</text>
+  <path d="M290 150 H390" class="rel"/><path d="M290 205 C340 260 345 330 390 340" class="rel"/>
+</svg>

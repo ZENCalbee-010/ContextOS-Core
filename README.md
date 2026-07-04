@@ -1,65 +1,62 @@
-# ContextOS Core v1.0
+# ContextOS Core
+
+[![Python](https://img.shields.io/badge/python-3.11%2B-blue.svg)](https://www.python.org/)
+[![CLI](https://img.shields.io/badge/interface-Typer%20CLI-0f766e.svg)](https://typer.tiangolo.com/)
+[![Storage](https://img.shields.io/badge/storage-SQLite-0369a1.svg)](https://www.sqlite.org/)
+[![Retrieval](https://img.shields.io/badge/retrieval-BM25%20active-f59e0b.svg)](https://github.com/dorianbrown/rank_bm25)
+[![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
 
 ContextOS Core is a local-first CLI-based AI Context Management System.
-
-The main v1.0 principle is:
 
 ```text
 Context Selection is more important than Compression.
 ```
 
-ContextOS Core is not a web app or cloud platform. It uses a local SQLite database, BM25 lexical retrieval, rule-based compression, and a Typer CLI.
+ContextOS Core is not a web app, cloud service, vector database, or hosted multi-user platform. It is a Python CLI that imports local files, chunks them, stores them in SQLite, retrieves relevant context with BM25, and builds prompts for local dry-run or adapter-based workflows.
 
-## Scope
+## Screenshots
 
-Included in v1.0:
+CLI help placeholder:
 
-- CLI-first workflow using Typer
-- SQLite local database
-- Reader, parser, indexer, compression, memory pipeline
-- BM25 retrieval only
+![ContextOS CLI help placeholder](docs/screenshots/cli-help.svg)
+
+Search results placeholder:
+
+![ContextOS search results placeholder](docs/screenshots/search-results.svg)
+
+## Highlights
+
+- Local-first Typer CLI
+- SQLite repository layer
+- File readers for text, Markdown, code, PDF, and DOCX
+- Parser and chunking pipeline
+- Incremental import with SHA-256 checks
+- BM25 lexical retrieval as the only active retriever
+- v2 retrieval provider interface with future placeholders
+- Rule-based light, medium, and aggressive compression
 - Token budget selection
-- Prompt context building
-- Claude adapter interface
-- Mock adapter for tests and local dry workflows
-- Rule-based compression only
+- Context builder
+- Mock adapter for tests and dry local workflows
+- Developer commands: `doctor`, `version`, `config`, `debug`
 
-Not included in v1.0:
-
-- FastAPI
-- PostgreSQL
-- Docker
-- Vector databases
-- Embeddings
-- Hybrid retrieval
-- Multi-user cloud features
-
-## Requirements
-
-- Python 3.11+
-- pip
-
-## Setup
+## Install
 
 ```powershell
-cd "C:\Project\ContextOS Core\contextos"
+git clone https://github.com/ZENCalbee-010/ContextOS-Core.git
+cd ContextOS-Core
 python -m venv .venv
 .\.venv\Scripts\Activate.ps1
 python -m pip install --upgrade pip
 python -m pip install -e ".[dev]"
 ```
 
-For Claude usage, set an API key in your environment:
+On Windows PowerShell, if `context` conflicts with another command, use:
 
 ```powershell
-$env:ANTHROPIC_API_KEY = "your-key"
+python -m contextos.cli.main --help
 ```
 
-The current Claude adapter validates configuration but does not yet make live API calls. Use `--adapter mock` for local tests.
-
 ## Quick Demo
-
-Run a local demo with the included sample files:
 
 ```powershell
 $db = ".\data\demo.sqlite3"
@@ -70,97 +67,98 @@ context optimize .\sample_data\context_principles.md --level medium --db-path $d
 context stats --db-path $db
 ```
 
-This demo stays local and does not call a real AI provider because it uses `--dry-run`.
+The demo stays local and does not call a real AI provider because it uses `--dry-run`.
 
 ## CLI Commands
 
-Show help:
-
 ```powershell
 context --help
-```
-
-On Windows PowerShell, if `context` conflicts with another command, use:
-
-```bash
-python -m contextos.cli.main --help
-```
-
-Import a file or folder recursively:
-
-```powershell
-context import .\docs --db-path .\data\contextos.sqlite3
-```
-
-Search imported chunks with BM25:
-
-```powershell
-context search "context selection" --top-k 5 --db-path .\data\contextos.sqlite3
-```
-
-Ask a question with selected context:
-
-```powershell
-context ask "What matters most?" --adapter mock --db-path .\data\contextos.sqlite3
-```
-
-Preview selected context without calling an adapter:
-
-```powershell
-context ask "What matters most?" --dry-run --db-path .\data\contextos.sqlite3
-```
-
-Re-run stored compression metadata for a document:
-
-```powershell
-context optimize .\docs\architecture.md --level aggressive --db-path .\data\contextos.sqlite3
-```
-
-Show workspace stats:
-
-```powershell
-context stats --db-path .\data\contextos.sqlite3
-```
-
-## Tested Local Workflow
-
-The integration test suite verifies this local-only workflow with one temporary SQLite database and no real AI adapter call:
-
-```powershell
 context import .\docs --db-path .\data\contextos.sqlite3
 context search "context selection" --top-k 5 --db-path .\data\contextos.sqlite3
 context ask "What matters most?" --dry-run --adapter mock --db-path .\data\contextos.sqlite3
-context optimize .\docs\architecture.md --level medium --db-path .\data\contextos.sqlite3
+context optimize .\docs\architecture.md --level aggressive --db-path .\data\contextos.sqlite3
 context stats --db-path .\data\contextos.sqlite3
+context doctor
+context version
+context config
+context debug
 ```
 
 ## Architecture
 
-The v1.0 architecture is documented in [ContextOS_Architecture.md](ContextOS_Architecture.md).
-Detailed command examples are in [docs/USAGE.md](docs/USAGE.md), and release limitations are in [docs/LIMITATIONS.md](docs/LIMITATIONS.md).
+![ContextOS architecture](docs/diagrams/contextos_pipeline.svg)
 
-Indexing flow:
+Core indexing flow:
 
 ```text
 Reader -> Parser -> Indexer -> Compression -> Memory
 ```
 
-Question flow:
+Core question flow:
 
 ```text
-Question -> BM25 Retriever -> Token Budget Selector -> Context Builder -> AI Adapter -> Response
+Question -> Retrieval Provider -> Token Budget Selector -> Context Builder -> AI Adapter -> Response
 ```
 
-## Tests
+More architecture documentation:
+
+- [ContextOS_Architecture.md](ContextOS_Architecture.md)
+- [ARCHITECTURE_DIAGRAM.md](ARCHITECTURE_DIAGRAM.md)
+- [PROJECT_STRUCTURE.md](PROJECT_STRUCTURE.md)
+- [docs/RETRIEVAL_V2.md](docs/RETRIEVAL_V2.md)
+- [docs/PERFORMANCE.md](docs/PERFORMANCE.md)
+
+## Scope
+
+Included:
+
+- CLI-first workflow using Typer
+- SQLite local database
+- BM25 lexical retrieval
+- Optional retrieval provider architecture with BM25 active only
+- Rule-based compression
+- Local single-user workflows
+- Mock adapter for tests and dry-runs
+
+Not included:
+
+- FastAPI
+- PostgreSQL
+- Docker runtime dependency
+- Vector database
+- Embeddings
+- Live hybrid retrieval
+- Multi-user cloud system
+
+## Development
+
+Run tests:
 
 ```powershell
-pytest
+python -m pytest
+python -m compileall contextos
 ```
+
+Run CLI locally:
+
+```powershell
+python -m contextos.cli.main --help
+```
+
+## Open Source
+
+- [CONTRIBUTING.md](CONTRIBUTING.md)
+- [SECURITY.md](SECURITY.md)
+- [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md)
+- [ROADMAP.md](ROADMAP.md)
+- [ROADMAP_v2.md](ROADMAP_v2.md)
+- [LICENSE](LICENSE)
 
 ## Current Limitations
 
 - Claude and OpenAI adapters are not live API clients yet.
-- Retrieval is intentionally BM25-only.
-- Compression is intentionally rule-based only.
-- SQLite schema migrations are not implemented yet.
+- BM25 is the only active retrieval provider.
+- Embedding and hybrid retrievers are placeholders only.
+- Compression is rule-based only.
+- SQLite migrations are not implemented yet.
 - The system is single-user and local-first by design.

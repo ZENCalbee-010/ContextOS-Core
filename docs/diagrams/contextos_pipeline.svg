@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1120" height="360" viewBox="0 0 1120 360" role="img" aria-label="Mermaid diagram of ContextOS pipeline">
+  <style>
+    .box{fill:#f8fafc;stroke:#334155;stroke-width:2;rx:8}
+    .future{fill:#eef2ff;stroke:#4f46e5;stroke-width:2;rx:8}
+    .text{font-family:Arial, sans-serif;font-size:15px;fill:#0f172a}
+    .title{font-family:Arial, sans-serif;font-size:20px;font-weight:bold;fill:#0f172a}
+    .arrow{stroke:#334155;stroke-width:2;marker-end:url(#arrow)}
+  </style>
+  <defs><marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10z" fill="#334155"/></marker></defs>
+  <text x="24" y="32" class="title">ContextOS Core Pipeline</text>
+  <rect x="30" y="70" width="120" height="54" class="box"/><text x="55" y="102" class="text">Local Files</text>
+  <rect x="190" y="70" width="140" height="54" class="box"/><text x="214" y="102" class="text">Reader Strategy</text>
+  <rect x="370" y="70" width="140" height="54" class="box"/><text x="398" y="102" class="text">Parser</text>
+  <rect x="550" y="70" width="120" height="54" class="box"/><text x="587" y="102" class="text">Indexer</text>
+  <rect x="710" y="70" width="160" height="54" class="box"/><text x="733" y="102" class="text">Compression</text>
+  <rect x="910" y="70" width="170" height="54" class="box"/><text x="939" y="102" class="text">SQLite Memory</text>
+  <path d="M150 97 H190" class="arrow"/><path d="M330 97 H370" class="arrow"/><path d="M510 97 H550" class="arrow"/><path d="M670 97 H710" class="arrow"/><path d="M870 97 H910" class="arrow"/>
+  <rect x="30" y="220" width="140" height="54" class="box"/><text x="55" y="252" class="text">Question</text>
+  <rect x="220" y="220" width="160" height="54" class="future"/><text x="246" y="252" class="text">Retriever</text>
+  <rect x="430" y="220" width="160" height="54" class="box"/><text x="454" y="252" class="text">Token Budget</text>
+  <rect x="640" y="220" width="160" height="54" class="box"/><text x="666" y="252" class="text">Context Builder</text>
+  <rect x="850" y="220" width="140" height="54" class="box"/><text x="882" y="252" class="text">AI Adapter</text>
+  <path d="M170 247 H220" class="arrow"/><path d="M380 247 H430" class="arrow"/><path d="M590 247 H640" class="arrow"/><path d="M800 247 H850" class="arrow"/>
+  <path d="M995 124 V180 H300 V220" class="arrow"/>
+</svg>

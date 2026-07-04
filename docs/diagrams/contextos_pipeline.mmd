@@ -1,0 +1,12 @@
+flowchart LR
+    A["Local Files"] --> B["Reader Strategy"]
+    B --> C["Parser / Chunker"]
+    C --> D["Indexer"]
+    D --> E["Rule-Based Compression"]
+    E --> F["SQLite Memory Repository"]
+    Q["User Question"] --> R["Retrieval Provider"]
+    R --> T["Token Budget Selector"]
+    T --> P["Context Builder"]
+    P --> AI["AI Adapter"]
+    AI --> O["Answer + Sources"]
+    F --> R

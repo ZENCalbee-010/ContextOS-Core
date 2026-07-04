@@ -9,24 +9,6 @@
 # ---------------------------------------------------------------------------
 """Retrieval components for context selection."""
 
-from contextos.retrieval.base import (
-    Retriever,
-    RetrievalProviderUnavailable,
-    RetrievalResult,
-)
 from contextos.retrieval.bm25_retriever import BM25Retriever, BM25Result
-from contextos.retrieval.future_embedding_retriever import FutureEmbeddingRetriever
-from contextos.retrieval.future_hybrid_retriever import FutureHybridRetriever
-from contextos.retrieval.providers import RetrievalProviderName, get_retriever
 
-__all__ = [
-    "BM25Retriever",
-    "BM25Result",
-    "FutureEmbeddingRetriever",
-    "FutureHybridRetriever",
-    "Retriever",
-    "RetrievalProviderName",
-    "RetrievalProviderUnavailable",
-    "RetrievalResult",
-    "get_retriever",
-]
+__all__ = ["BM25Retriever", "BM25Result"]

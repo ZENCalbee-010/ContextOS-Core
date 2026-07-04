@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="420" viewBox="0 0 900 420" role="img" aria-label="ContextOS doctor command screenshot placeholder">
+  <rect width="900" height="420" fill="#101418"/>
+  <rect x="32" y="32" width="836" height="356" rx="8" fill="#171d23" stroke="#2f3a45"/>
+  <text x="64" y="82" fill="#7dd3fc" font-family="Consolas, monospace" font-size="24">Doctor Check</text>
+  <text x="64" y="124" fill="#e5e7eb" font-family="Consolas, monospace" font-size="16">$ context doctor</text>
+  <text x="64" y="170" fill="#a7f3d0" font-family="Consolas, monospace" font-size="15">Python: OK</text>
+  <text x="64" y="202" fill="#a7f3d0" font-family="Consolas, monospace" font-size="15">Settings file: OK</text>
+  <text x="64" y="234" fill="#a7f3d0" font-family="Consolas, monospace" font-size="15">SQLite database: OK</text>
+  <text x="64" y="286" fill="#94a3b8" font-family="Consolas, monospace" font-size="15">Screenshot placeholder. Replace with captured terminal output.</text>
+</svg>

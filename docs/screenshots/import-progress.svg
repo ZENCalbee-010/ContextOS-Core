@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="420" viewBox="0 0 900 420" role="img" aria-label="ContextOS import progress screenshot placeholder">
+  <rect width="900" height="420" fill="#101418"/>
+  <rect x="32" y="32" width="836" height="356" rx="8" fill="#171d23" stroke="#2f3a45"/>
+  <text x="64" y="82" fill="#7dd3fc" font-family="Consolas, monospace" font-size="24">Import Progress</text>
+  <text x="64" y="124" fill="#e5e7eb" font-family="Consolas, monospace" font-size="16">$ context import ./sample_data</text>
+  <rect x="64" y="166" width="520" height="22" rx="4" fill="#334155"/>
+  <rect x="64" y="166" width="390" height="22" rx="4" fill="#22c55e"/>
+  <text x="604" y="183" fill="#a7f3d0" font-family="Consolas, monospace" font-size="15">Importing files 3/3</text>
+  <text x="64" y="246" fill="#94a3b8" font-family="Consolas, monospace" font-size="15">Screenshot placeholder. Replace with captured terminal output.</text>
+</svg>

@@ -1,0 +1,7 @@
+flowchart TB
+    I["Retriever Interface"] --> B["BM25Retriever active"]
+    I --> E["FutureEmbeddingRetriever placeholder"]
+    I --> H["FutureHybridRetriever placeholder"]
+    B --> M["SQLite chunks"]
+    E -. "not implemented" .-> X["RetrievalProviderUnavailable"]
+    H -. "not implemented" .-> X

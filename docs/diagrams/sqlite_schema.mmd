@@ -1,0 +1,29 @@
+erDiagram
+    documents ||--o{ chunks : contains
+    documents ||--o{ summaries : summarizes
+    conversation_history {
+        integer id
+        text role
+        text content
+        text metadata_json
+    }
+    documents {
+        integer id
+        text filepath
+        text sha256
+        text metadata_json
+    }
+    chunks {
+        integer id
+        integer document_id
+        integer chunk_index
+        text content
+        integer token_count
+        text metadata_json
+    }
+    summaries {
+        integer id
+        integer document_id
+        text summary
+        text level
+    }

@@ -25,7 +25,6 @@ from rank_bm25 import BM25Okapi
 
 from contextos.memory.models import Chunk
 from contextos.memory.repository import SQLiteMemoryRepository
-from contextos.retrieval.base import RetrievalResult
 
 
 # TOKEN_RE: regex สำหรับ tokenize ข้อความ — จับคำที่ประกอบด้วย
@@ -36,7 +35,7 @@ TOKEN_RE = re.compile(r"[A-Za-z0-9_]+")
 # BM25Result: เก็บผลลัพธ์การค้นหาสำหรับ chunk เดียว
 # frozen=True → immutable เพื่อให้ปลอดภัยในการส่งต่อ
 @dataclass(frozen=True)
-class BM25Result(RetrievalResult):
+class BM25Result:
     chunk: Chunk    # chunk ที่ค้นพบ
     score: float    # คะแนน BM25 ยิ่งสูงยิ่งเกี่ยวข้อง
 
@@ -44,14 +43,8 @@ class BM25Result(RetrievalResult):
 class BM25Retriever:
     """Retrieve top-k chunks with rank-bm25 BM25Okapi."""
 
-    provider_name = "bm25"
-
     def __init__(self, repository: SQLiteMemoryRepository) -> None:
         self.repository = repository
-        self._index_signature: tuple[int, int | None] | None = None
-        self._chunks: list[Chunk] = []
-        self._tokenized_chunks: list[list[str]] = []
-        self._bm25: BM25Okapi | None = None
 
     def search(self, query: str, *, top_k: int = 5) -> list[BM25Result]:
         """
@@ -68,16 +61,18 @@ class BM25Retriever:
             return []
 
         # ดึง chunks ทั้งหมดจากฐานข้อมูล
-        chunks, bm25 = self._load_index()
-        if not chunks or bm25 is None:
+        chunks = self.repository.get_all_chunks()
+        if not chunks:
             return []
 
         # Tokenize เนื้อหาของแต่ละ chunk และ query
+        tokenized_chunks = [tokenize(chunk.content) for chunk in chunks]
         tokenized_query = tokenize(query)
         if not tokenized_query:
             return []
 
         # สร้าง BM25 index จาก tokenized chunks แล้วคำนวณ score
+        bm25 = BM25Okapi(tokenized_chunks)
         scores = bm25.get_scores(tokenized_query)
 
         # จับคู่ chunk กับ score แล้วเรียงจากมากไปน้อย
@@ -87,29 +82,6 @@ class BM25Retriever:
         ]
 
         return sorted(scored, key=lambda result: result.score, reverse=True)[:top_k]
-
-    def _load_index(self) -> tuple[list[Chunk], BM25Okapi | None]:
-        """Lazy-load and cache the BM25 index until stored chunks change."""
-        signature = self.repository.get_chunk_cache_signature()
-        if self._bm25 is not None and self._index_signature == signature:
-            return self._chunks, self._bm25
-
-        chunks = self.repository.get_all_chunks()
-        tokenized_chunks = [tokenize(chunk.content) for chunk in chunks]
-        bm25 = BM25Okapi(tokenized_chunks) if tokenized_chunks else None
-
-        self._index_signature = signature
-        self._chunks = chunks
-        self._tokenized_chunks = tokenized_chunks
-        self._bm25 = bm25
-        return self._chunks, self._bm25
-
-    def clear_cache(self) -> None:
-        """Clear the cached BM25 index."""
-        self._index_signature = None
-        self._chunks = []
-        self._tokenized_chunks = []
-        self._bm25 = None
 
 
 def tokenize(text: str) -> list[str]:

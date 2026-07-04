@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="420" viewBox="0 0 900 420" role="img" aria-label="ContextOS search results screenshot placeholder">
+  <rect width="900" height="420" fill="#101418"/>
+  <rect x="32" y="32" width="836" height="356" rx="8" fill="#171d23" stroke="#2f3a45"/>
+  <text x="64" y="82" fill="#7dd3fc" font-family="Consolas, monospace" font-size="24">BM25 Search Results</text>
+  <text x="64" y="124" fill="#e5e7eb" font-family="Consolas, monospace" font-size="16">$ context search "context selection"</text>
+  <text x="64" y="170" fill="#fef3c7" font-family="Consolas, monospace" font-size="15">[Result 1] Score: 1.2345</text>
+  <text x="64" y="202" fill="#a7f3d0" font-family="Consolas, monospace" font-size="15">Source: sample_data/context_principles.md</text>
+  <text x="64" y="234" fill="#cbd5e1" font-family="Consolas, monospace" font-size="15">Preview: Context selection is more important than compression...</text>
+  <text x="64" y="300" fill="#94a3b8" font-family="Consolas, monospace" font-size="15">Screenshot placeholder. Replace with captured terminal output.</text>
+</svg>

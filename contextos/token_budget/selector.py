@@ -20,6 +20,12 @@
 from dataclasses import dataclass
 from typing import Generic, Protocol, TypeVar
 
+from contextos.exceptions import ContextOSError
+
+
+class TokenBudgetError(ContextOSError, ValueError):
+    """Raised when token budget settings are invalid."""
+
 
 # ChunkLike Protocol: กำหนดว่า object ที่มี attribute 'token_count'
 # สามารถใช้ร่วมกับ selector ได้ (structural typing / duck typing)
@@ -56,7 +62,7 @@ class TokenBudgetSelector:
         # ค่า 0.12 หมายถึงสำรอง 12% ของ budget เผื่อ prompt overhead
         # (เช่น SYSTEM_PROMPT, INSTRUCTIONS ของ ContextBuilder)
         if safety_margin < 0 or safety_margin >= 1:
-            raise ValueError("safety_margin must be >= 0 and < 1")
+            raise TokenBudgetError("safety_margin must be >= 0 and < 1")
         self.safety_margin = safety_margin
 
     def select(self, scored_chunks: list[T], *, max_tokens: int) -> TokenBudgetSelection[T]:
@@ -70,7 +76,7 @@ class TokenBudgetSelector:
         3. เพิ่ม chunk ทีละตัว ถ้ายังไม่เกิน budget
         """
         if max_tokens < 0:
-            raise ValueError("max_tokens must be >= 0")
+            raise TokenBudgetError("max_tokens must be >= 0")
 
         # คำนวณ budget จริงหลังหัก safety margin
         effective_budget = int(max_tokens * (1 - self.safety_margin))

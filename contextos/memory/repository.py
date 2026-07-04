@@ -14,8 +14,7 @@
 #   - ใช้ model classes จาก models.py เป็น return type
 # Design Pattern — Repository Pattern:
 #   แยก data access logic ออกจาก business logic อย่างชัดเจน
-#   ทำให้สามารถเปลี่ยน database engine (เช่น จาก SQLite เป็น PostgreSQL)
-#   ได้โดยไม่ต้องแก้ไข code ใน layer อื่น ๆ
+#   ทำให้ SQLite access logic อยู่ในจุดเดียว และไม่รั่วไปยัง layer อื่น ๆ
 #   caller ไม่ต้องรู้ว่าข้างในใช้ SQL อะไร แค่เรียก method ที่ต้องการ
 # =============================================================================
 """Repository API for ContextOS local memory."""
@@ -26,6 +25,7 @@ import sqlite3
 from typing import Iterable
 
 from contextos.config import DEFAULT_DB_PATH
+from contextos.exceptions import MemoryError
 # นำเข้า connection helpers จาก db.py — connect() ใช้เปิด connection,
 # init_db (rename เป็น create_schema) ใช้สร้างตาราง
 from contextos.memory.db import DatabasePath, connect, init_db as create_schema
@@ -57,10 +57,13 @@ class SQLiteMemoryRepository:
 
     def __init__(self, db_path: DatabasePath = DEFAULT_DB_PATH) -> None:
         self.db_path = Path(db_path)
+        self._all_chunks_cache: list[Chunk] | None = None
+        self._all_chunks_signature: tuple[int, int | None] | None = None
 
     def init_db(self) -> None:
         """สร้างตารางและ indexes ใน database ถ้ายังไม่มี"""
         create_schema(self.db_path)
+        self.clear_chunk_cache()
 
     # -------------------------------------------------------------------------
     # upsert_document — Insert หรือ Update เอกสาร
@@ -109,7 +112,7 @@ class SQLiteMemoryRepository:
             # ถ้า filepath และ sha256 ชี้ไปที่ document คนละตัว
             # แสดงว่ามี data integrity issue — ต้อง raise error
             if path_row and hash_row and path_row["id"] != hash_row["id"]:
-                raise ValueError(
+                raise MemoryError(
                     "filepath and sha256 belong to different documents"
                 )
 
@@ -169,6 +172,7 @@ class SQLiteMemoryRepository:
                 "SELECT * FROM documents WHERE id = ?",
                 (document_id,),
             ).fetchone()
+            self.clear_chunk_cache()
             return Document.from_row(row)
 
     # -------------------------------------------------------------------------
@@ -204,20 +208,20 @@ class SQLiteMemoryRepository:
                     (document_id,),
                 )
 
-            for chunk in chunk_list:
-                connection.execute(
-                    """
-                    INSERT INTO chunks (
-                        document_id,
-                        chunk_index,
-                        content,
-                        token_count,
-                        start_char,
-                        end_char,
-                        metadata_json
-                    )
-                    VALUES (?, ?, ?, ?, ?, ?, ?)
-                    """,
+            connection.executemany(
+                """
+                INSERT INTO chunks (
+                    document_id,
+                    chunk_index,
+                    content,
+                    token_count,
+                    start_char,
+                    end_char,
+                    metadata_json
+                )
+                VALUES (?, ?, ?, ?, ?, ?, ?)
+                """,
+                [
                     (
                         document_id,
                         chunk.chunk_index,
@@ -226,8 +230,10 @@ class SQLiteMemoryRepository:
                         chunk.start_char,
                         chunk.end_char,
                         encode_metadata(chunk.metadata),
-                    ),
-                )
+                    )
+                    for chunk in chunk_list
+                ],
+            )
 
             # ดึง chunks ทั้งหมดของ document นี้กลับมา เรียงตามลำดับ
             rows = connection.execute(
@@ -239,7 +245,9 @@ class SQLiteMemoryRepository:
                 """,
                 (document_id,),
             ).fetchall()
-            return [Chunk.from_row(row) for row in rows]
+            chunks = [Chunk.from_row(row) for row in rows]
+            self.clear_chunk_cache()
+            return chunks
 
     # -------------------------------------------------------------------------
     # Document Query Methods — ค้นหา Document ด้วยเงื่อนไขต่าง ๆ
@@ -283,6 +291,10 @@ class SQLiteMemoryRepository:
         """ดึง chunks ทั้งหมดในระบบ เรียงตาม document_id และ chunk_index
         ใช้ใน full-text search หรือ BM25 ranking ที่ต้องสแกนทุก chunk
         """
+        signature = self.get_chunk_cache_signature()
+        if self._all_chunks_cache is not None and self._all_chunks_signature == signature:
+            return list(self._all_chunks_cache)
+
         with connect(self.db_path) as connection:
             rows = connection.execute(
                 """
@@ -291,7 +303,10 @@ class SQLiteMemoryRepository:
                 ORDER BY document_id ASC, chunk_index ASC
                 """
             ).fetchall()
-            return [Chunk.from_row(row) for row in rows]
+            chunks = [Chunk.from_row(row) for row in rows]
+            self._all_chunks_cache = chunks
+            self._all_chunks_signature = signature
+            return list(chunks)
 
     def get_chunks_by_document(self, document_id: int) -> list[Chunk]:
         """ดึง chunks ทั้งหมดของ document เดียว เรียงตามลำดับ chunk_index
@@ -313,7 +328,7 @@ class SQLiteMemoryRepository:
     # update_chunk_metadata — อัปเดต metadata ของ chunk
     # -------------------------------------------------------------------------
     # จุดประสงค์: แก้ไขเฉพาะ metadata ของ chunk โดยไม่แก้ content
-    # ใช้เมื่อ: ต้องการเพิ่ม embedding vector reference, tags, หรือข้อมูลอื่น ๆ
+    # ใช้เมื่อ: ต้องการเพิ่ม tags หรือ metadata อื่น ๆ
     #   ให้กับ chunk ที่มีอยู่แล้ว โดยไม่ต้อง re-import ทั้ง document
     # -------------------------------------------------------------------------
     def update_chunk_metadata(self, chunk_id: int, metadata: Metadata) -> Chunk:
@@ -333,6 +348,7 @@ class SQLiteMemoryRepository:
                 "SELECT * FROM chunks WHERE id = ?",
                 (chunk_id,),
             ).fetchone()
+            self.clear_chunk_cache()
             return Chunk.from_row(row)
 
     # -------------------------------------------------------------------------
@@ -368,6 +384,19 @@ class SQLiteMemoryRepository:
             ).fetchone()
             return Conversation.from_row(row)
 
+    def clear_chunk_cache(self) -> None:
+        """Clear cached chunk rows after writes."""
+        self._all_chunks_cache = None
+        self._all_chunks_signature = None
+
+    def get_chunk_cache_signature(self) -> tuple[int, int | None]:
+        """Return a cheap signature used to invalidate chunk and BM25 caches."""
+        with connect(self.db_path) as connection:
+            row = connection.execute(
+                "SELECT COUNT(*) AS chunk_count, MAX(id) AS max_chunk_id FROM chunks"
+            ).fetchone()
+            return int(row["chunk_count"]), row["max_chunk_id"]
+
     # -------------------------------------------------------------------------
     # Internal Validation Methods — ตรวจสอบว่า record มีอยู่จริง
     # -------------------------------------------------------------------------
@@ -387,7 +416,7 @@ class SQLiteMemoryRepository:
             (document_id,),
         ).fetchone()
         if row is None:
-            raise ValueError(f"document_id does not exist: {document_id}")
+            raise MemoryError(f"document_id does not exist: {document_id}")
 
     def _require_chunk(
         self,
@@ -400,7 +429,7 @@ class SQLiteMemoryRepository:
             (chunk_id,),
         ).fetchone()
         if row is None:
-            raise ValueError(f"chunk_id does not exist: {chunk_id}")
+            raise MemoryError(f"chunk_id does not exist: {chunk_id}")
 
 
 # ---------------------------------------------------------------------------

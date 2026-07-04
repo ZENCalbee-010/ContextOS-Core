@@ -1,0 +1,29 @@
+database:
+  path: data/contextos.sqlite3
+
+compression:
+  default_level: light
+  levels:
+    - light
+    - medium
+    - aggressive
+
+retrieval:
+  algorithm: bm25
+  top_k: 5
+
+token_budget:
+  max_tokens: 8000
+  safety_margin: 0.12
+
+ai_adapter:
+  provider: claude
+  model: claude-3-5-sonnet-latest
+  api_key_env: ANTHROPIC_API_KEY
+
+logging:
+  level: INFO
+  debug: false
+  file_path: data/contextos.log
+  max_bytes: 1048576
+  backup_count: 3

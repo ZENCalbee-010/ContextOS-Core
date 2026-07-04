@@ -9,7 +9,7 @@
 #   - ช่วยให้เปลี่ยนวิธีตัดข้อความได้โดยไม่ต้องแก้ pipeline หลัก
 # ความสัมพันธ์กับระบบ :
 #   - ข้อมูลที่ readers อ่านมาจะถูกส่งเข้า parse() ของ parser ที่เหมาะสม
-#   - ผลลัพธ์ ParsedChunk จะถูกนำไปสร้าง embedding หรือ index ต่อ
+#   - ผลลัพธ์ ParsedChunk จะถูกนำไปสร้าง keyword/structural index ต่อ
 # ---------------------------------------------------------------------------
 """Base parser interfaces and chunk models."""
 
@@ -19,6 +19,8 @@ from abc import ABC, abstractmethod
 from dataclasses import dataclass
 # re — ใช้ regex นับจำนวน token ด้วยวิธี whitespace-split
 import re
+
+from contextos.exceptions import ParserError
 
 
 # ---------------------------------------------------------------------------
@@ -51,7 +53,7 @@ class BaseParser(ABC):
     # เหตุผลที่ validate : ค่า 0 หรือลบจะทำให้ลูปตัด chunk ไม่มีวันหยุด
     def __init__(self, max_tokens: int = 400) -> None:
         if max_tokens <= 0:
-            raise ValueError("max_tokens must be greater than zero")
+            raise ParserError("max_tokens must be greater than zero")
         self.max_tokens = max_tokens
 
     @abstractmethod

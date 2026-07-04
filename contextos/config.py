@@ -144,7 +144,7 @@ def _dict_to_settings(raw: Mapping[str, Any]) -> AppSettings:
     logging_settings = raw.get("logging", {})
 
     return AppSettings(
-        database=DatabaseSettings(path=Path(database.get("path", DEFAULT_SETTINGS.database.path))),
+        database=DatabaseSettings(path=_resolve_project_path(database.get("path", DEFAULT_SETTINGS.database.path))),
         compression=CompressionSettings(
             default_level=str(compression.get("default_level", "light")),
             levels=tuple(compression.get("levels", ("light", "medium", "aggressive"))),
@@ -165,7 +165,7 @@ def _dict_to_settings(raw: Mapping[str, Any]) -> AppSettings:
         logging=LoggingSettings(
             level=str(logging_settings.get("level", "INFO")),
             debug=bool(logging_settings.get("debug", False)),
-            file_path=Path(logging_settings.get("file_path", DEFAULT_SETTINGS.logging.file_path)),
+            file_path=_resolve_project_path(logging_settings.get("file_path", DEFAULT_SETTINGS.logging.file_path)),
             max_bytes=int(logging_settings.get("max_bytes", 1_048_576)),
             backup_count=int(logging_settings.get("backup_count", 3)),
         ),
@@ -195,6 +195,11 @@ def _apply_environment_overrides(
         if env_name in environ:
             merged.setdefault(section, {})[key] = _parse_scalar(environ[env_name])
     return merged
+
+
+def _resolve_project_path(value: str | Path) -> Path:
+    path = Path(value)
+    return path if path.is_absolute() else PROJECT_ROOT / path
 
 
 def _deep_merge(base: dict[str, Any], override: Mapping[str, Any]) -> dict[str, Any]:

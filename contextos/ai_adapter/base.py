@@ -17,12 +17,14 @@
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
 
+from contextos.exceptions import AdapterError
+
 
 # === Exception Hierarchy ===
 # ลำดับชั้นของ exception เฉพาะสำหรับ AI adapter
 # ช่วยให้ caller สามารถ catch ได้อย่างเจาะจง
 
-class AIAdapterError(RuntimeError):
+class AIAdapterError(AdapterError):
     """Raised when an AI adapter cannot complete a request."""
 
 

@@ -66,6 +66,10 @@ button {
   padding: 10px 14px;
 }
 
+button:hover:not(:disabled) {
+  filter: brightness(0.96);
+}
+
 button:disabled {
   cursor: not-allowed;
   opacity: 0.6;
@@ -326,7 +330,7 @@ label {
 
 .panel,
 .command-log {
-  padding: 16px;
+  padding: 18px;
 }
 
 .panel h2,
@@ -705,6 +709,25 @@ label {
   padding: 12px;
 }
 
+.savings-explainer,
+.scope-note {
+  background: var(--surface-muted);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  color: var(--text-muted);
+  line-height: 1.45;
+  padding: 10px;
+}
+
+.scope-note {
+  display: grid;
+  gap: 4px;
+}
+
+.scope-note p {
+  margin: 0;
+}
+
 .efficiency-meter-header {
   align-items: center;
   display: flex;
@@ -865,16 +888,31 @@ label {
   white-space: pre-wrap;
 }
 
+.copy-button {
+  background: var(--surface);
+  border: 1px solid var(--border-strong);
+  color: var(--text-muted);
+  justify-self: start;
+  padding: 8px 10px;
+}
+
 .args-details summary,
+.stream-details summary,
 .stream-label {
   color: var(--text-soft);
+  cursor: pointer;
   font-size: 0.82rem;
   font-weight: 800;
 }
 
-.args-details {
+.args-details,
+.stream-details {
   display: grid;
   gap: 6px;
+}
+
+.stream-details pre {
+  max-height: 280px;
 }
 
 .stream-label {

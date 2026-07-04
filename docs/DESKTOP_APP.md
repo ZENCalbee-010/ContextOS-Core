@@ -37,7 +37,7 @@ data/desktop.db
 2. Search imported context.
 3. Ask with dry-run or mock mode.
 4. Check token savings.
-5. View workspace stats.
+5. Run stats and benchmark.
 
 ## Final Scope
 
@@ -69,10 +69,11 @@ The desktop bridge only allows these ContextOS commands:
 ```text
 import <path> --db-path data/desktop.db
 search <query> --top-k <n> --db-path data/desktop.db
-ask <question> --dry-run --adapter mock --budget <n> --db-path data/desktop.db
-ask <question> --adapter mock --budget <n> --db-path data/desktop.db
+ask <question> --top-k <n> --budget <n> --dry-run --db-path data/desktop.db
+ask <question> --top-k <n> --budget <n> --adapter mock --db-path data/desktop.db
 optimize <document> --level light|medium|aggressive --db-path data/desktop.db
 stats --db-path data/desktop.db
+benchmark --dataset sample_data/benchmark --db-path data/benchmark_desktop.db --output benchmark_report_desktop.md --query <query> --question <question> --iterations <n>
 ```
 
 Arguments are passed as arrays through Tauri. The app does not execute arbitrary shell strings.
@@ -115,14 +116,15 @@ npm run build
 
 ## UI Panels
 
-- DropZone: imports a file or folder path.
+- DropZone: imports selected files or folders through the local CLI.
 - DocumentList: placeholder for imported document browsing.
-- SearchPanel: runs BM25 search.
-- AskPanel: runs dry-run or mock ask.
+- SearchPanel: runs BM25 search and displays parsed result cards with raw output fallback.
+- AskPanel: runs dry-run or mock ask and displays prompt preview, mock output, and sources when parseable.
 - OptimizePanel: re-runs stored rule-based compression metadata.
-- StatsPanel: loads workspace statistics.
-- TokenSavingsPanel: displays parsed token savings output.
-- CommandLog: shows command, stdout, stderr, and exit code.
+- StatsPanel: loads workspace statistics and parsed metric cards.
+- BenchmarkPanel: runs local benchmark and displays latency, compression, and token savings metrics.
+- TokenSavingsPanel: displays parsed token savings output with an efficiency meter.
+- CommandLog: shows command, args, stdout, stderr, exit code, duration, collapsed output, and copy output action.
 
 ## Screenshot Instructions
 
@@ -135,7 +137,7 @@ Screenshots are not committed yet. Suggested capture flow:
 5. Capture:
    - Full workspace with workflow guide.
    - TokenSavingsPanel after ask.
-   - CommandLog with stdout, stderr, and exit code.
+   - CommandLog with args, collapsed stdout/stderr, exit code, duration, and copy output action.
 
 Suggested paths:
 
@@ -148,13 +150,18 @@ docs/screenshots/desktop-command-log.png
 ## Manual QA Checklist
 
 - App opens without requiring a real AI API key.
-- Workflow guide makes the order clear: import, search, ask, savings, stats.
+- Workflow guide makes the order clear: import, search, ask, savings, stats/benchmark.
 - Empty CommandLog explains what to do next.
 - Importing an invalid path shows an error entry.
+- Unsupported dropped files are marked and skipped.
 - Searching an empty query is blocked with a clear error entry.
 - Asking an empty question is blocked with a clear error entry.
 - Ask dry-run does not call a real AI provider.
 - Ask mock displays stdout and updates TokenSavingsPanel when savings output exists.
+- TokenSavingsPanel explains what token savings means and displays an efficiency meter.
+- CommandLog collapses long output and can copy stdout/stderr.
+- Settings shows the backend command, current DB path, and Desktop scope note.
+- Benchmark supports query, question, iterations, parsed metrics, and raw output fallback.
 - Optimize supports only light, medium, and aggressive.
 - Stats command writes workspace totals to CommandLog.
 

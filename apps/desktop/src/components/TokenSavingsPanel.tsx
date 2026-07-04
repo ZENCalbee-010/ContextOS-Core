@@ -7,13 +7,16 @@ interface TokenSavingsPanelProps {
 
 export function TokenSavingsPanel({ report }: TokenSavingsPanelProps) {
   const savingsDescription = report
-    ? `${report.savedTokens} tokens avoided from the currently imported context.`
-    : "Run Ask to populate the latest token savings report.";
+    ? `ContextOS selected ${report.selectedContextTokens} tokens from ${report.totalAvailableTokens} available tokens.`
+    : "Run Ask in dry-run or mock mode to calculate token savings.";
   const savingsPercent = report ? Math.max(0, Math.min(100, report.savingsPercent)) : 0;
 
   return (
     <Panel title="TokenSavingsPanel">
       <p className="panel-copy">{savingsDescription}</p>
+      <div className="savings-explainer">
+        Token savings compares all imported chunk tokens with the context selected for the current ask flow.
+      </div>
       <div className="efficiency-meter">
         <div className="efficiency-meter-header">
           <strong>AI Efficiency</strong>
@@ -23,11 +26,11 @@ export function TokenSavingsPanel({ report }: TokenSavingsPanelProps) {
           <div style={{ width: `${savingsPercent}%` }} />
         </div>
         <div className="efficiency-flow">
-          <span>Original</span>
+          <span>Original context</span>
           <strong>{report?.totalAvailableTokens ?? "--"}</strong>
-          <span>ContextOS</span>
+          <span>Selected by ContextOS</span>
           <strong>{report?.selectedContextTokens ?? "--"}</strong>
-          <span>Saved</span>
+          <span>Tokens avoided</span>
           <strong>{report?.savedTokens ?? "--"}</strong>
         </div>
       </div>
@@ -39,15 +42,15 @@ export function TokenSavingsPanel({ report }: TokenSavingsPanelProps) {
           </strong>
         </div>
         <div>
-          <span>Total available</span>
+          <span>Available tokens</span>
           <strong>{report?.totalAvailableTokens ?? "--"}</strong>
         </div>
         <div>
-          <span>Selected</span>
+          <span>Selected tokens</span>
           <strong>{report?.selectedContextTokens ?? "--"}</strong>
         </div>
         <div>
-          <span>Saved</span>
+          <span>Tokens saved</span>
           <strong>{report?.savedTokens ?? "--"}</strong>
         </div>
       </div>

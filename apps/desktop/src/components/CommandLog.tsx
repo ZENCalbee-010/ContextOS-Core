@@ -5,6 +5,18 @@ interface CommandLogProps {
 }
 
 export function CommandLog({ entries }: CommandLogProps) {
+  async function copyOutput(entry: CommandLogEntry) {
+    const output = [entry.stdout, entry.stderr].filter(Boolean).join("\n\n");
+    if (!output || !navigator.clipboard) {
+      return;
+    }
+    try {
+      await navigator.clipboard.writeText(output);
+    } catch {
+      return;
+    }
+  }
+
   return (
     <aside className="command-log">
       <div className="command-log-heading">
@@ -21,7 +33,7 @@ export function CommandLog({ entries }: CommandLogProps) {
           {entries.map((entry) => (
             <article key={entry.id} className={`log-entry ${entry.status}`}>
               <div className="log-entry-header">
-                <strong>{entry.status.toUpperCase()}</strong>
+                <strong>{entry.status === "success" ? "SUCCESS" : entry.status === "error" ? "FAILED" : entry.status.toUpperCase()}</strong>
                 <span>{entry.createdAt}</span>
               </div>
               <code>{entry.command}</code>
@@ -29,21 +41,29 @@ export function CommandLog({ entries }: CommandLogProps) {
                 <span>Exit code: {entry.exitCode ?? "n/a"}</span>
                 <span>Duration: {entry.durationMs ?? "n/a"} ms</span>
               </div>
+              <button
+                type="button"
+                className="copy-button"
+                onClick={() => void copyOutput(entry)}
+                disabled={!entry.stdout && !entry.stderr}
+              >
+                Copy output
+              </button>
               <details className="args-details">
                 <summary>Arguments</summary>
                 <pre>{JSON.stringify(entry.args, null, 2)}</pre>
               </details>
               {entry.stdout && (
-                <>
-                  <span className="stream-label">stdout</span>
+                <details className="stream-details">
+                  <summary>stdout</summary>
                   <pre>{entry.stdout}</pre>
-                </>
+                </details>
               )}
               {entry.stderr && (
-                <>
-                  <span className="stream-label">stderr</span>
+                <details className="stream-details" open={entry.status === "error"}>
+                  <summary>stderr</summary>
                   <pre>{entry.stderr}</pre>
-                </>
+                </details>
               )}
             </article>
           ))}

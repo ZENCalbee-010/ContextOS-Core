@@ -121,8 +121,8 @@ export default function App() {
           </div>
           <div className={activeView === "stats" ? "current" : ""}>
             <span>5</span>
-            <strong>Stats</strong>
-            <p>Review workspace totals.</p>
+            <strong>Stats / Benchmark</strong>
+            <p>Review totals and latency.</p>
           </div>
         </section>
 

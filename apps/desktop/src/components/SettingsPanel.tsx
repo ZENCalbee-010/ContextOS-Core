@@ -9,6 +9,10 @@ export function SettingsPanel({ theme, onThemeChange }: SettingsPanelProps) {
   return (
     <Panel title="Settings">
       <p className="panel-copy">Local desktop preferences and runtime paths for the CLI wrapper.</p>
+      <div className="scope-note">
+        <strong>Desktop scope</strong>
+        <p>This app uses the local ContextOS CLI engine. It does not add cloud sync, embeddings, vector search, or real AI API calls.</p>
+      </div>
       <label>
         Theme
         <select value={theme} onChange={(event) => onThemeChange(event.target.value as "light" | "dark")}>
@@ -18,11 +22,11 @@ export function SettingsPanel({ theme, onThemeChange }: SettingsPanelProps) {
       </label>
       <div className="settings-list">
         <div>
-          <span>CLI backend</span>
+          <span>Backend command</span>
           <strong>python -m contextos.cli.main</strong>
         </div>
         <div>
-          <span>Desktop database</span>
+          <span>Current DB path</span>
           <strong>data/desktop.db</strong>
         </div>
         <div>

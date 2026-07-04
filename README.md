@@ -80,6 +80,12 @@ Show help:
 context --help
 ```
 
+On Windows PowerShell, if `context` conflicts with another command, use:
+
+```bash
+python -m contextos.cli.main --help
+```
+
 Import a file or folder recursively:
 
 ```powershell

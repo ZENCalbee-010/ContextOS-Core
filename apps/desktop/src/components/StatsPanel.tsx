@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { runContextCommand } from "../api/contextosCli";
+import { stats } from "../api/contextosClient";
 import type { CommandResult } from "../types";
 import { Panel } from "./Panel";
 
@@ -13,7 +13,7 @@ export function StatsPanel({ onCommandComplete }: StatsPanelProps) {
   async function loadStats() {
     setIsRunning(true);
     try {
-      onCommandComplete(await runContextCommand(["stats"]));
+      onCommandComplete(await stats());
     } finally {
       setIsRunning(false);
     }

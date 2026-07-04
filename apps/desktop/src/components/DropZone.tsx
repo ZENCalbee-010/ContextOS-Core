@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { runContextCommand } from "../api/contextosCli";
+import { importPath as importContextPath } from "../api/contextosClient";
 import type { CommandResult } from "../types";
 import { Panel } from "./Panel";
 
@@ -11,10 +11,10 @@ export function DropZone({ onCommandComplete }: DropZoneProps) {
   const [path, setPath] = useState("sample_data");
   const [isRunning, setIsRunning] = useState(false);
 
-  async function importPath() {
+  async function runImport() {
     setIsRunning(true);
     try {
-      onCommandComplete(await runContextCommand(["import", path]));
+      onCommandComplete(await importContextPath(path));
     } finally {
       setIsRunning(false);
     }
@@ -30,7 +30,7 @@ export function DropZone({ onCommandComplete }: DropZoneProps) {
         Import path
         <input value={path} onChange={(event) => setPath(event.target.value)} />
       </label>
-      <button type="button" onClick={importPath} disabled={isRunning || !path.trim()}>
+      <button type="button" onClick={runImport} disabled={isRunning || !path.trim()}>
         {isRunning ? "Importing..." : "Import"}
       </button>
     </Panel>

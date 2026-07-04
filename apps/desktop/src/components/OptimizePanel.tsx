@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { runContextCommand } from "../api/contextosCli";
+import { optimize as optimizeContext } from "../api/contextosClient";
 import type { CommandResult } from "../types";
 import { Panel } from "./Panel";
 
@@ -15,7 +15,9 @@ export function OptimizePanel({ onCommandComplete }: OptimizePanelProps) {
   async function optimize() {
     setIsRunning(true);
     try {
-      onCommandComplete(await runContextCommand(["optimize", document, "--level", level]));
+      onCommandComplete(
+        await optimizeContext(document, level as "light" | "medium" | "aggressive")
+      );
     } finally {
       setIsRunning(false);
     }

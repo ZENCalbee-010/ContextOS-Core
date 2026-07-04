@@ -19,7 +19,19 @@ export function CommandLog({ entries }: CommandLogProps) {
                 <span>{entry.createdAt}</span>
               </div>
               <code>{entry.command}</code>
-              <pre>{entry.output}</pre>
+              <div className="exit-code">Exit code: {entry.exitCode ?? "n/a"}</div>
+              {entry.stdout && (
+                <>
+                  <span className="stream-label">stdout</span>
+                  <pre>{entry.stdout}</pre>
+                </>
+              )}
+              {entry.stderr && (
+                <>
+                  <span className="stream-label">stderr</span>
+                  <pre>{entry.stderr}</pre>
+                </>
+              )}
             </article>
           ))}
         </div>

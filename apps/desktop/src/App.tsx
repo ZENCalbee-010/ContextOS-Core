@@ -7,12 +7,19 @@ import { OptimizePanel } from "./components/OptimizePanel";
 import { SearchPanel } from "./components/SearchPanel";
 import { StatsPanel } from "./components/StatsPanel";
 import { TokenSavingsPanel } from "./components/TokenSavingsPanel";
-import type { CommandLogEntry, CommandResult } from "./types";
+import { parseTokenSavings } from "./api/contextosClient";
+import type { CommandLogEntry, CommandResult, TokenSavingsReport } from "./types";
 
 export default function App() {
   const [entries, setEntries] = useState<CommandLogEntry[]>([]);
+  const [tokenSavings, setTokenSavings] = useState<TokenSavingsReport | null>(null);
 
   function recordResult(result: CommandResult) {
+    const parsedSavings = parseTokenSavings(`${result.stdout}\n${result.stderr}`);
+    if (parsedSavings) {
+      setTokenSavings(parsedSavings);
+    }
+
     setEntries((current) => [
       {
         ...result,
@@ -37,7 +44,7 @@ export default function App() {
         <div className="left-column">
           <DropZone onCommandComplete={recordResult} />
           <DocumentList />
-          <TokenSavingsPanel />
+          <TokenSavingsPanel report={tokenSavings} />
         </div>
 
         <div className="main-column">

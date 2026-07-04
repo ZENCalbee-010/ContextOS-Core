@@ -248,6 +248,17 @@ label {
   white-space: pre-wrap;
 }
 
+.exit-code,
+.stream-label {
+  color: #66776f;
+  font-size: 0.82rem;
+  font-weight: 800;
+}
+
+.stream-label {
+  text-transform: uppercase;
+}
+
 @media (max-width: 1100px) {
   .workspace-grid {
     grid-template-columns: 1fr;

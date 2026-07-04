@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { runContextCommand } from "../api/contextosCli";
+import { search as searchContext } from "../api/contextosClient";
 import type { CommandResult } from "../types";
 import { Panel } from "./Panel";
 
@@ -15,9 +15,7 @@ export function SearchPanel({ onCommandComplete }: SearchPanelProps) {
   async function search() {
     setIsRunning(true);
     try {
-      onCommandComplete(
-        await runContextCommand(["search", query, "--top-k", String(topK)])
-      );
+      onCommandComplete(await searchContext(query, topK));
     } finally {
       setIsRunning(false);
     }

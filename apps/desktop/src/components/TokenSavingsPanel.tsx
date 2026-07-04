@@ -1,24 +1,31 @@
+import type { TokenSavingsReport } from "../types";
 import { Panel } from "./Panel";
 
-export function TokenSavingsPanel() {
+interface TokenSavingsPanelProps {
+  report: TokenSavingsReport | null;
+}
+
+export function TokenSavingsPanel({ report }: TokenSavingsPanelProps) {
   return (
     <Panel title="TokenSavingsPanel">
       <div className="metric-grid">
         <div>
           <span>Total available</span>
-          <strong>--</strong>
+          <strong>{report?.totalAvailableTokens ?? "--"}</strong>
         </div>
         <div>
           <span>Selected</span>
-          <strong>--</strong>
+          <strong>{report?.selectedContextTokens ?? "--"}</strong>
         </div>
         <div>
           <span>Saved</span>
-          <strong>--</strong>
+          <strong>{report?.savedTokens ?? "--"}</strong>
         </div>
         <div>
           <span>Savings</span>
-          <strong>--%</strong>
+          <strong>
+            {report ? `${report.savingsPercent.toFixed(2)}%` : "--%"}
+          </strong>
         </div>
       </div>
     </Panel>

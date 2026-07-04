@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { runContextCommand } from "../api/contextosCli";
+import { ask as askContext } from "../api/contextosClient";
 import type { CommandResult } from "../types";
 import { Panel } from "./Panel";
 
@@ -14,14 +14,9 @@ export function AskPanel({ onCommandComplete }: AskPanelProps) {
   const [isRunning, setIsRunning] = useState(false);
 
   async function ask() {
-    const args = ["ask", question, "--adapter", "mock", "--budget", String(budget)];
-    if (dryRun) {
-      args.push("--dry-run");
-    }
-
     setIsRunning(true);
     try {
-      onCommandComplete(await runContextCommand(args));
+      onCommandComplete(await askContext(question, { budget, dryRun }));
     } finally {
       setIsRunning(false);
     }

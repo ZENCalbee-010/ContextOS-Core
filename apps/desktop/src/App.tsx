@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { AppHeader } from "./components/AppHeader";
 import { AskPanel } from "./components/AskPanel";
+import { BenchmarkPanel } from "./components/BenchmarkPanel";
 import { CommandLog } from "./components/CommandLog";
 import { DocumentList } from "./components/DocumentList";
 import { DropZone } from "./components/DropZone";
@@ -72,18 +73,7 @@ export default function App() {
     }
 
     if (activeView === "benchmark") {
-      return (
-        <section className="panel benchmark-placeholder">
-          <h2>Benchmark</h2>
-          <p className="panel-copy">
-            Run the benchmark command from the CLI today, then review the generated Markdown report.
-          </p>
-          <code>
-            python -m contextos.cli.main benchmark --dataset sample_data/benchmark --db-path
-            data/benchmark.db
-          </code>
-        </section>
-      );
+      return <BenchmarkPanel onCommandComplete={recordResult} />;
     }
 
     if (activeView === "stats") {

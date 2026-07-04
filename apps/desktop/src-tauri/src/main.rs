@@ -79,6 +79,7 @@ fn validate_args(args: &[String]) -> Result<(), String> {
         "ask" => validate_ask(args),
         "optimize" => validate_optimize(args),
         "stats" => validate_stats(args),
+        "benchmark" => validate_benchmark(args),
         _ => Err(format!("Command is not approved for desktop: {}", command)),
     }
 }
@@ -137,6 +138,35 @@ fn validate_stats(args: &[String]) -> Result<(), String> {
     validate_allowed_flags(args, &["--db-path"])
 }
 
+fn validate_benchmark(args: &[String]) -> Result<(), String> {
+    validate_positional_count(args, 1)?;
+    validate_allowed_flags(
+        args,
+        &[
+            "--dataset",
+            "--db-path",
+            "--output",
+            "--query",
+            "--question",
+            "--iterations",
+        ],
+    )?;
+
+    match flag_value(args, "--iterations") {
+        Some(value) => value
+            .parse::<u32>()
+            .map_err(|_| "Benchmark iterations must be a positive integer.".to_string())
+            .and_then(|iterations| {
+                if iterations == 0 {
+                    Err("Benchmark iterations must be at least 1.".to_string())
+                } else {
+                    Ok(())
+                }
+            }),
+        None => Err("Benchmark iterations are required.".to_string()),
+    }
+}
+
 fn require_value(args: &[String], index: usize, message: &str) -> Result<(), String> {
     if args.get(index).map(|value| value.trim().is_empty()).unwrap_or(true) {
         Err(message.to_string())
@@ -189,7 +219,19 @@ fn validate_positional_count(args: &[String], max_positionals: usize) -> Result<
 }
 
 fn flag_requires_value(flag: &str) -> bool {
-    matches!(flag, "--adapter" | "--budget" | "--db-path" | "--level" | "--top-k")
+    matches!(
+        flag,
+        "--adapter"
+            | "--budget"
+            | "--dataset"
+            | "--db-path"
+            | "--iterations"
+            | "--level"
+            | "--output"
+            | "--query"
+            | "--question"
+            | "--top-k"
+    )
 }
 
 fn flag_value<'a>(args: &'a [String], flag: &str) -> Option<&'a str> {

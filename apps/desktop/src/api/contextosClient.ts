@@ -5,6 +5,12 @@ const DB_PATH = "data/desktop.db";
 
 type CompressionLevel = "light" | "medium" | "aggressive";
 
+interface BenchmarkOptions {
+  query: string;
+  question: string;
+  iterations: number;
+}
+
 export async function importPath(path: string): Promise<CommandResult> {
   const cleanPath = path.trim();
   if (!cleanPath) {
@@ -67,6 +73,35 @@ export async function stats(): Promise<CommandResult> {
   return runApprovedCommand(["stats"]);
 }
 
+export async function benchmark(options: BenchmarkOptions): Promise<CommandResult> {
+  const cleanQuery = options.query.trim();
+  const cleanQuestion = options.question.trim();
+  const iterations = Math.max(1, Math.floor(options.iterations));
+
+  if (!cleanQuery) {
+    return localError(["benchmark"], "Benchmark query is required.");
+  }
+  if (!cleanQuestion) {
+    return localError(["benchmark"], "Benchmark question is required.");
+  }
+
+  return runApprovedCommand([
+    "benchmark",
+    "--dataset",
+    "sample_data/benchmark",
+    "--db-path",
+    "data/benchmark_desktop.db",
+    "--output",
+    "benchmark_report_desktop.md",
+    "--query",
+    cleanQuery,
+    "--question",
+    cleanQuestion,
+    "--iterations",
+    String(iterations)
+  ]);
+}
+
 export function parseTokenSavings(output: string): TokenSavingsReport | null {
   const totalAvailable = matchInteger(output, /Total available tokens:\s*(\d+)/i);
   const selectedContext = matchInteger(output, /Selected context tokens:\s*(\d+)/i);
@@ -115,6 +150,9 @@ async function runApprovedCommand(args: string[]): Promise<CommandResult> {
 }
 
 function withDbPath(args: string[]): string[] {
+  if (args[0] === "benchmark") {
+    return args;
+  }
   if (args.includes("--db-path")) {
     return args;
   }

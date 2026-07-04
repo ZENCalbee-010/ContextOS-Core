@@ -528,6 +528,12 @@ label {
   gap: 10px;
 }
 
+.stats-results,
+.benchmark-results {
+  display: grid;
+  gap: 10px;
+}
+
 .mode-note {
   align-self: end;
   background: var(--surface-muted);
@@ -764,13 +770,23 @@ label {
   font-weight: 800;
 }
 
+.output-path,
 .benchmark-placeholder code {
   background: var(--surface-muted);
+  border: 1px solid var(--border);
   border-radius: 6px;
   color: var(--text);
+  display: grid;
+  gap: 4px;
   overflow: auto;
   padding: 10px;
   white-space: pre-wrap;
+}
+
+.output-path span {
+  color: var(--text-soft);
+  font-size: 0.82rem;
+  font-weight: 800;
 }
 
 .command-log {

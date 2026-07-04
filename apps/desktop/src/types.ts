@@ -7,6 +7,7 @@ export interface CommandResult {
   stdout: string;
   stderr: string;
   exitCode: number | null;
+  durationMs: number | null;
 }
 
 export interface CommandLogEntry extends CommandResult {

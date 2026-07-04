@@ -90,6 +90,7 @@ export function parseTokenSavings(output: string): TokenSavingsReport | null {
 async function runApprovedCommand(args: string[]): Promise<CommandResult> {
   const fullArgs = withDbPath(args);
   const command = formatDisplayCommand(fullArgs);
+  const startedAt = performance.now();
 
   if (!isTauriRuntime()) {
     return {
@@ -98,11 +99,16 @@ async function runApprovedCommand(args: string[]): Promise<CommandResult> {
       args: fullArgs,
       stdout: "",
       stderr: "Desktop command bridge is available when running inside Tauri.",
-      exitCode: null
+      exitCode: null,
+      durationMs: elapsedMs(startedAt)
     };
   }
 
-  return invoke<CommandResult>("run_context_command", { args: fullArgs });
+  const result = await invoke<CommandResult>("run_context_command", { args: fullArgs });
+  return {
+    ...result,
+    durationMs: result.durationMs ?? elapsedMs(startedAt)
+  };
 }
 
 function withDbPath(args: string[]): string[] {
@@ -119,7 +125,8 @@ function localError(args: string[], message: string): CommandResult {
     args,
     stdout: "",
     stderr: message,
-    exitCode: null
+    exitCode: null,
+    durationMs: 0
   };
 }
 
@@ -150,4 +157,8 @@ function matchFloat(output: string, pattern: RegExp): number | null {
 
 function isTauriRuntime(): boolean {
   return "__TAURI_INTERNALS__" in window;
+}
+
+function elapsedMs(startedAt: number): number {
+  return Math.max(0, Math.round(performance.now() - startedAt));
 }

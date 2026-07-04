@@ -14,6 +14,8 @@ interface SelectedImportPath {
   kind: "file" | "folder";
   supported: boolean;
   reason: string;
+  status: "ready" | "importing" | "success" | "error" | "skipped";
+  message?: string;
 }
 
 interface DesktopDroppedFile extends File {
@@ -43,18 +45,66 @@ export function DropZone({ onCommandComplete }: DropZoneProps) {
   ]);
   const [isDragging, setIsDragging] = useState(false);
   const [isRunning, setIsRunning] = useState(false);
+  const [currentPath, setCurrentPath] = useState<string | null>(null);
+  const [importedCount, setImportedCount] = useState(0);
+  const [failedCount, setFailedCount] = useState(0);
+  const [lastSummary, setLastSummary] = useState<string | null>(null);
   const supportedItems = useMemo(
     () => selectedItems.filter((item) => item.supported),
     [selectedItems]
   );
+  const unsupportedCount = selectedItems.length - supportedItems.length;
+  const progressPercent = supportedItems.length > 0
+    ? Math.round(((importedCount + failedCount) / supportedItems.length) * 100)
+    : 0;
 
   async function runImport() {
+    if (supportedItems.length === 0) {
+      setLastSummary(
+        selectedItems.length === 0
+          ? "Select at least one supported file or folder before importing."
+          : "All selected paths are unsupported and were skipped."
+      );
+      markUnsupportedAsSkipped();
+      return;
+    }
+
     setIsRunning(true);
+    setImportedCount(0);
+    setFailedCount(0);
+    setLastSummary(null);
+    markUnsupportedAsSkipped();
+
+    let imported = 0;
+    let failed = 0;
     try {
       for (const item of supportedItems) {
-        onCommandComplete(await importContextPath(item.path));
+        setCurrentPath(item.path);
+        updateItemStatus(item.id, "importing", "Importing...");
+        const result = await importContextPath(item.path);
+        onCommandComplete(result);
+
+        if (result.status === "success") {
+          imported += 1;
+          setImportedCount(imported);
+          updateItemStatus(item.id, "success", "Imported successfully.");
+        } else {
+          failed += 1;
+          setFailedCount(failed);
+          updateItemStatus(
+            item.id,
+            "error",
+            result.status === "idle"
+              ? "Not run in browser preview. Open the Tauri app to execute imports."
+              : result.stderr || "Import command failed."
+          );
+        }
       }
     } finally {
+      setCurrentPath(null);
+      setLastSummary(
+        `Import finished: ${imported} imported, ${failed} failed, ${unsupportedCount} skipped.`
+      );
       setIsRunning(false);
     }
   }
@@ -112,6 +162,28 @@ export function DropZone({ onCommandComplete }: DropZoneProps) {
 
   function clearPaths() {
     setSelectedItems([]);
+    setImportedCount(0);
+    setFailedCount(0);
+    setLastSummary(null);
+    setCurrentPath(null);
+  }
+
+  function updateItemStatus(
+    id: string,
+    status: SelectedImportPath["status"],
+    message?: string
+  ) {
+    setSelectedItems((current) =>
+      current.map((item) => (item.id === id ? { ...item, status, message } : item))
+    );
+  }
+
+  function markUnsupportedAsSkipped() {
+    setSelectedItems((current) =>
+      current.map((item) =>
+        item.supported ? item : { ...item, status: "skipped", message: "Skipped because this type is unsupported." }
+      )
+    );
   }
 
   return (
@@ -136,7 +208,7 @@ export function DropZone({ onCommandComplete }: DropZoneProps) {
         <button type="button" className="secondary-button" onClick={clearPaths} disabled={selectedItems.length === 0}>
           Clear
         </button>
-        <button type="button" onClick={runImport} disabled={isRunning || supportedItems.length === 0}>
+        <button type="button" onClick={runImport} disabled={isRunning || selectedItems.length === 0}>
           {isRunning ? "Importing..." : `Import ${supportedItems.length || ""}`.trim()}
         </button>
       </div>
@@ -147,6 +219,23 @@ export function DropZone({ onCommandComplete }: DropZoneProps) {
         <span>{selectedItems.length - supportedItems.length} unsupported</span>
       </div>
 
+      {(isRunning || lastSummary) && (
+        <div className="import-progress" aria-live="polite">
+          <div className="progress-heading">
+            <strong>{isRunning ? "Importing..." : "Last import summary"}</strong>
+            <span>{progressPercent}%</span>
+          </div>
+          <div className="progress-track">
+            <div style={{ width: `${progressPercent}%` }} />
+          </div>
+          {currentPath && <p>Current file: {currentPath}</p>}
+          <p>
+            Imported {importedCount} / Failed {failedCount} / Skipped {unsupportedCount}
+          </p>
+          {lastSummary && <p>{lastSummary}</p>}
+        </div>
+      )}
+
       {selectedItems.length === 0 ? (
         <div className="empty-state">
           <strong>No files selected</strong>
@@ -155,10 +244,13 @@ export function DropZone({ onCommandComplete }: DropZoneProps) {
       ) : (
         <div className="selected-path-list">
           {selectedItems.map((item) => (
-            <article key={item.id} className={item.supported ? "selected-path supported" : "selected-path unsupported"}>
+            <article
+              key={item.id}
+              className={`selected-path ${item.supported ? "supported" : "unsupported"} ${item.status}`}
+            >
               <div>
                 <strong>{item.path}</strong>
-                <span>{item.kind} · {item.reason}</span>
+                <span>{item.kind} - {item.message || item.reason}</span>
               </div>
               <button type="button" className="icon-button" onClick={() => removePath(item.id)} aria-label={`Remove ${item.path}`}>
                 Remove
@@ -188,7 +280,8 @@ function createSelectedPath(path: string): SelectedImportPath {
         : `${extension} supported`
       : extension
         ? `${extension} is not supported`
-        : "unsupported file type"
+        : "unsupported file type",
+    status: supported ? "ready" : "skipped"
   };
 }
 

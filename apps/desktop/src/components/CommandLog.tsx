@@ -25,7 +25,14 @@ export function CommandLog({ entries }: CommandLogProps) {
                 <span>{entry.createdAt}</span>
               </div>
               <code>{entry.command}</code>
-              <div className="exit-code">Exit code: {entry.exitCode ?? "n/a"}</div>
+              <div className="command-meta">
+                <span>Exit code: {entry.exitCode ?? "n/a"}</span>
+                <span>Duration: {entry.durationMs ?? "n/a"} ms</span>
+              </div>
+              <details className="args-details">
+                <summary>Arguments</summary>
+                <pre>{JSON.stringify(entry.args, null, 2)}</pre>
+              </details>
               {entry.stdout && (
                 <>
                   <span className="stream-label">stdout</span>

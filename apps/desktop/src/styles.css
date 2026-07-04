@@ -424,6 +424,22 @@ label {
   border-left-color: var(--error);
 }
 
+.selected-path.importing {
+  border-left-color: var(--accent);
+}
+
+.selected-path.success {
+  border-left-color: var(--success);
+}
+
+.selected-path.error {
+  border-left-color: var(--error);
+}
+
+.selected-path.skipped {
+  opacity: 0.78;
+}
+
 .selected-path div {
   display: grid;
   gap: 4px;
@@ -447,6 +463,50 @@ label {
   border: 1px solid var(--border-strong);
   color: var(--text-muted);
   padding: 8px 10px;
+}
+
+.import-progress {
+  background: var(--surface-muted);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  display: grid;
+  gap: 8px;
+  padding: 10px;
+}
+
+.progress-heading,
+.command-meta {
+  align-items: center;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: space-between;
+}
+
+.progress-heading span,
+.command-meta span {
+  color: var(--text-soft);
+  font-size: 0.84rem;
+  font-weight: 800;
+}
+
+.progress-track {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  height: 10px;
+  overflow: hidden;
+}
+
+.progress-track div {
+  background: var(--accent);
+  height: 100%;
+  transition: width 160ms ease;
+}
+
+.import-progress p {
+  color: var(--text-muted);
+  margin: 0;
 }
 
 .drop-zone small,
@@ -609,11 +669,16 @@ label {
   white-space: pre-wrap;
 }
 
-.exit-code,
+.args-details summary,
 .stream-label {
   color: var(--text-soft);
   font-size: 0.82rem;
   font-weight: 800;
+}
+
+.args-details {
+  display: grid;
+  gap: 6px;
 }
 
 .stream-label {

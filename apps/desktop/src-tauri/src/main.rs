@@ -1,6 +1,7 @@
 use serde::Serialize;
 use std::path::PathBuf;
 use std::process::Command;
+use std::time::Instant;
 
 #[derive(Serialize)]
 #[serde(rename_all = "camelCase")]
@@ -11,6 +12,7 @@ struct CommandResult {
     stdout: String,
     stderr: String,
     exit_code: Option<i32>,
+    duration_ms: Option<u128>,
 }
 
 #[tauri::command]
@@ -26,14 +28,17 @@ fn run_context_command(args: Vec<String>) -> CommandResult {
             stdout: String::new(),
             stderr: message,
             exit_code: None,
+            duration_ms: Some(0),
         };
     }
 
+    let started_at = Instant::now();
     let output = Command::new("python")
         .args(["-m", "contextos.cli.main"])
         .args(&args)
         .current_dir(&repo_root)
         .output();
+    let duration_ms = Some(started_at.elapsed().as_millis());
 
     match output {
         Ok(output) => {
@@ -48,6 +53,7 @@ fn run_context_command(args: Vec<String>) -> CommandResult {
                 stdout: String::from_utf8_lossy(&output.stdout).to_string(),
                 stderr: String::from_utf8_lossy(&output.stderr).to_string(),
                 exit_code: output.status.code(),
+                duration_ms,
             }
         }
         Err(error) => CommandResult {
@@ -57,6 +63,7 @@ fn run_context_command(args: Vec<String>) -> CommandResult {
             stdout: String::new(),
             stderr: format!("Failed to run Python CLI: {}", error),
             exit_code: None,
+            duration_ms,
         },
     }
 }

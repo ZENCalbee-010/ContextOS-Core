@@ -19,6 +19,7 @@ import typer
 # นำเข้าฟังก์ชันหลักของแต่ละ command จาก submodule
 # แต่ละฟังก์ชันรับ arguments/options ผ่าน Typer decorators
 from contextos.cli.commands.ask_cmd import ask_context
+from contextos.cli.commands.benchmark_cmd import benchmark_context
 from contextos.cli.commands.import_cmd import import_context
 from contextos.cli.commands.optimize_cmd import optimize_context
 from contextos.cli.commands.search_cmd import search_context
@@ -57,6 +58,9 @@ app.command(
 app.command(name="ask", help="Ask a question using selected local context.")(ask_context)
 app.command(name="search", help="Search imported local context.")(search_context)
 app.command(name="stats", help="Show local ContextOS workspace statistics.")(stats_context)
+app.command(name="benchmark", help="Run a local benchmark and write a Markdown report.")(
+    benchmark_context
+)
 app.command(name="doctor", help="Check local ContextOS environment health.")(doctor_context)
 app.command(name="version", help="Show the installed ContextOS Core version.")(version_context)
 app.command(name="config", help="Inspect or initialize local configuration.")(config_context)

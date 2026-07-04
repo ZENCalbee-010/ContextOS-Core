@@ -1,5 +1,12 @@
 # Changelog
 
+## Unreleased
+
+### Added
+
+- `context benchmark` command for local benchmark reports.
+- Benchmark documentation in `docs/BENCHMARK.md`.
+
 ## v1.1.0
 
 Release theme: Token Savings Report + Desktop App MVP.

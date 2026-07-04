@@ -92,6 +92,7 @@ context search "context selection" --top-k 5 --db-path .\data\contextos.sqlite3
 context ask "What matters most?" --dry-run --adapter mock --db-path .\data\contextos.sqlite3
 context optimize .\docs\architecture.md --level aggressive --db-path .\data\contextos.sqlite3
 context stats --db-path .\data\contextos.sqlite3
+context benchmark --dataset .\sample_data\benchmark --db-path .\data\benchmark.db --output .\benchmark_report.md
 context doctor
 context version
 context config
@@ -147,6 +148,7 @@ More architecture documentation:
 - [docs/DESKTOP_APP.md](docs/DESKTOP_APP.md)
 - [docs/RETRIEVAL_V2.md](docs/RETRIEVAL_V2.md)
 - [docs/PERFORMANCE.md](docs/PERFORMANCE.md)
+- [docs/BENCHMARK.md](docs/BENCHMARK.md)
 
 ## Scope
 

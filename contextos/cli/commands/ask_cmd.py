@@ -35,7 +35,11 @@ from contextos.evaluation import EvaluationRunner
 from contextos.formatting import format_source
 from contextos.memory.models import Chunk
 from contextos.memory.repository import SQLiteMemoryRepository
-from contextos.token_budget import TokenBudgetSelector
+from contextos.token_budget import (
+    TokenBudgetSelector,
+    calculate_token_savings,
+    format_token_savings_report,
+)
 
 
 def ask_context(
@@ -81,6 +85,10 @@ def ask_context(
     # ใช้ Greedy Selection: เลือก chunk ที่ดีที่สุดก่อน จนกว่าจะเต็ม budget
     selection = TokenBudgetSelector().select(retrieval_results, max_tokens=budget)
     selected = selection.selected
+    token_savings = calculate_token_savings(
+        repository.get_all_chunks(),
+        selected_context_tokens=selection.total_tokens,
+    )
 
     # ขั้นตอนที่ 4: Context Building - สร้าง prompt จาก chunk ที่เลือก
     prompt = ContextBuilder(repository).build(question, selected)
@@ -91,6 +99,8 @@ def ask_context(
         safe_echo("DRY RUN")
         safe_echo(f"Selected chunks: {len(selected)}")
         safe_echo(f"Tokens used: {selection.total_tokens}")
+        safe_echo("")
+        safe_echo(format_token_savings_report(token_savings))
         safe_echo("")
         safe_echo(prompt)
         safe_echo("")
@@ -114,6 +124,7 @@ def ask_context(
         "budget": budget,
         "adapter": adapter.provider,
         "latency_ms": retrieval_evaluation.latency_ms,
+        "token_savings": token_savings.to_metadata(),
     }
     repository.save_conversation("user", question, metadata=conversation_metadata)
     repository.save_conversation(
@@ -123,8 +134,10 @@ def ask_context(
     )
 
     # แสดงคำตอบจาก AI และแหล่งอ้างอิงให้ผู้ใช้
-    typer.echo(response.content)
-    typer.echo("")
+    safe_echo(response.content)
+    safe_echo("")
+    safe_echo(format_token_savings_report(token_savings))
+    safe_echo("")
     _print_sources(repository, [item.chunk for item in selected])
 
 

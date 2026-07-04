@@ -1,4 +1,5 @@
 from typer.testing import CliRunner
+import json
 import sqlite3
 
 from contextos.cli.main import app
@@ -214,6 +215,11 @@ def test_ask_command_uses_mock_adapter_and_saves_conversation(tmp_path) -> None:
 
     assert result.exit_code == 0
     assert "Mock response generated from selected context." in result.output
+    assert "TOKEN SAVINGS REPORT" in result.output
+    assert "Total available tokens: 10" in result.output
+    assert "Selected context tokens: 10" in result.output
+    assert "Saved tokens: 0" in result.output
+    assert "Savings percent: 0.00%" in result.output
     assert "Sources:" in result.output
     assert "docs/context.md, Principle, lines 1-2" in result.output
 
@@ -231,6 +237,13 @@ def test_ask_command_uses_mock_adapter_and_saves_conversation(tmp_path) -> None:
     assert '"used_chunk_ids":' in rows[0][2]
     assert '"adapter": "mock"' in rows[0][2]
     assert '"latency_ms":' in rows[0][2]
+    metadata = json.loads(rows[0][2])
+    assert metadata["token_savings"] == {
+        "total_available_tokens": 10,
+        "selected_context_tokens": 10,
+        "saved_tokens": 0,
+        "savings_percent": 0.0,
+    }
     assert rows[0][2] == rows[1][2]
 
 
@@ -266,6 +279,11 @@ def test_ask_command_dry_run_shows_prompt_without_saving_conversation(tmp_path) 
 
     assert result.exit_code == 0
     assert "DRY RUN" in result.output
+    assert "TOKEN SAVINGS REPORT" in result.output
+    assert "Total available tokens: 5" in result.output
+    assert "Selected context tokens: 5" in result.output
+    assert "Saved tokens: 0" in result.output
+    assert "Savings percent: 0.00%" in result.output
     assert "SYSTEM:" in result.output
     assert "CONTEXT:" in result.output
     assert "QUESTION:" in result.output
@@ -361,7 +379,16 @@ def test_stats_command_shows_workspace_metrics(tmp_path) -> None:
     repository.save_conversation(
         "user",
         "What matters?",
-        metadata={"latency_ms": 12.345, "tokens_used": 7},
+        metadata={
+            "latency_ms": 12.345,
+            "tokens_used": 7,
+            "token_savings": {
+                "total_available_tokens": 7,
+                "selected_context_tokens": 3,
+                "saved_tokens": 4,
+                "savings_percent": 57.14285714285714,
+            },
+        },
     )
 
     result = runner.invoke(app, ["stats", "--db-path", str(db_path)])
@@ -372,6 +399,7 @@ def test_stats_command_shows_workspace_metrics(tmp_path) -> None:
     assert "Total original tokens: 7" in result.output
     assert "Average compression ratio: 0.3000" in result.output
     assert "Latest query latency: 12.35 ms" in result.output
+    assert "Latest token savings: 4 tokens (57.14%)" in result.output
 
 
 def test_stats_command_handles_empty_workspace(tmp_path) -> None:
@@ -385,3 +413,4 @@ def test_stats_command_handles_empty_workspace(tmp_path) -> None:
     assert "Total original tokens: 0" in result.output
     assert "Average compression ratio: 0.0000" in result.output
     assert "Latest query latency: unavailable" in result.output
+    assert "Latest token savings: unavailable" in result.output

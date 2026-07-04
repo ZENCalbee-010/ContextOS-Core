@@ -11,5 +11,16 @@
 """Token budget planning utilities."""
 
 from contextos.token_budget.selector import TokenBudgetSelection, TokenBudgetSelector
+from contextos.token_budget.savings import (
+    TokenSavingsReport,
+    calculate_token_savings,
+    format_token_savings_report,
+)
 
-__all__ = ["TokenBudgetSelection", "TokenBudgetSelector"]
+__all__ = [
+    "TokenBudgetSelection",
+    "TokenBudgetSelector",
+    "TokenSavingsReport",
+    "calculate_token_savings",
+    "format_token_savings_report",
+]

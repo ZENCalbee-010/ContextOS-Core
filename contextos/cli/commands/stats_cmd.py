@@ -51,6 +51,15 @@ def stats_context(
         typer.echo("Latest query latency: unavailable")
     else:
         typer.echo(f"Latest query latency: {latest_latency:.2f} ms")
+    latest_token_savings = stats["latest_token_savings"]
+    if latest_token_savings is None:
+        typer.echo("Latest token savings: unavailable")
+    else:
+        typer.echo(
+            "Latest token savings: "
+            f"{latest_token_savings['saved_tokens']} tokens "
+            f"({latest_token_savings['savings_percent']:.2f}%)"
+        )
 
 
 def load_stats(db_path: str | Path) -> dict:
@@ -105,6 +114,7 @@ def load_stats(db_path: str | Path) -> dict:
         "total_original_tokens": total_original_tokens,
         "average_compression_ratio": _average_compression_ratio(chunk_metadata),
         "latest_query_latency_ms": _latest_query_latency(conversation_metadata),
+        "latest_token_savings": _latest_token_savings(conversation_metadata),
     }
 
 
@@ -139,6 +149,20 @@ def _latest_query_latency(metadata_rows: list[str]) -> float | None:
         latency = metadata.get("latency_ms")
         if latency is not None:
             return float(latency)
+    return None
+
+
+def _latest_token_savings(metadata_rows: list[str]) -> dict | None:
+    """Return the latest token savings metadata from conversation history."""
+    for metadata_json in metadata_rows:
+        metadata = _decode(metadata_json)
+        token_savings = metadata.get("token_savings")
+        if (
+            isinstance(token_savings, dict)
+            and "saved_tokens" in token_savings
+            and "savings_percent" in token_savings
+        ):
+            return token_savings
     return None
 
 

@@ -523,6 +523,23 @@ label {
   gap: 10px;
 }
 
+.ask-results {
+  display: grid;
+  gap: 10px;
+}
+
+.mode-note {
+  align-self: end;
+  background: var(--surface-muted);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  color: var(--text-soft);
+  font-size: 0.88rem;
+  font-weight: 800;
+  min-height: 41px;
+  padding: 10px;
+}
+
 .result-summary,
 .search-result-heading {
   align-items: center;
@@ -587,6 +604,37 @@ label {
   white-space: pre-wrap;
 }
 
+.prompt-preview {
+  display: grid;
+  gap: 8px;
+}
+
+.prompt-preview pre {
+  background: var(--surface-muted);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  color: var(--text);
+  max-height: 420px;
+  overflow: auto;
+  padding: 10px;
+  white-space: pre-wrap;
+}
+
+.source-list {
+  background: var(--surface-muted);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  display: grid;
+  gap: 8px;
+  padding: 10px;
+}
+
+.source-list span {
+  color: var(--text-muted);
+  font-size: 0.9rem;
+  font-weight: 700;
+}
+
 .drop-zone small,
 .panel-copy,
 .empty-state,
@@ -640,6 +688,60 @@ label {
 .metric-grid .primary-metric strong {
   color: var(--accent);
   font-size: 2rem;
+}
+
+.efficiency-meter {
+  background: var(--surface-muted);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  display: grid;
+  gap: 10px;
+  padding: 12px;
+}
+
+.efficiency-meter-header {
+  align-items: center;
+  display: flex;
+  gap: 10px;
+  justify-content: space-between;
+}
+
+.efficiency-meter-header span {
+  color: var(--text-soft);
+  font-size: 0.86rem;
+  font-weight: 800;
+}
+
+.efficiency-track {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  height: 14px;
+  overflow: hidden;
+}
+
+.efficiency-track div {
+  background: var(--accent);
+  height: 100%;
+  transition: width 180ms ease;
+}
+
+.efficiency-flow {
+  align-items: center;
+  display: grid;
+  gap: 8px;
+  grid-template-columns: 1fr auto;
+}
+
+.efficiency-flow span {
+  color: var(--text-soft);
+  font-size: 0.84rem;
+  font-weight: 800;
+}
+
+.efficiency-flow strong {
+  color: var(--text);
+  text-align: right;
 }
 
 .settings-list {

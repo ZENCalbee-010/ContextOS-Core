@@ -28,7 +28,7 @@ export async function search(query: string, topK: number): Promise<CommandResult
 
 export async function ask(
   question: string,
-  options: { budget: number; dryRun: boolean }
+  options: { budget: number; mode: "dry-run" | "mock"; topK: number }
 ): Promise<CommandResult> {
   const cleanQuestion = question.trim();
   if (!cleanQuestion) {
@@ -38,13 +38,16 @@ export async function ask(
   const args = [
     "ask",
     cleanQuestion,
-    "--adapter",
-    "mock",
+    "--top-k",
+    String(clampInteger(options.topK, 1, 50)),
     "--budget",
     String(Math.max(0, Math.floor(options.budget)))
   ];
-  if (options.dryRun) {
+
+  if (options.mode === "dry-run") {
     args.push("--dry-run");
+  } else {
+    args.push("--adapter", "mock");
   }
   return runApprovedCommand(args);
 }

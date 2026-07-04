@@ -509,6 +509,84 @@ label {
   margin: 0;
 }
 
+.inline-error {
+  background: color-mix(in srgb, var(--error) 12%, var(--surface));
+  border: 1px solid color-mix(in srgb, var(--error) 48%, var(--border));
+  border-radius: 8px;
+  color: var(--error);
+  font-weight: 800;
+  padding: 10px;
+}
+
+.search-results {
+  display: grid;
+  gap: 10px;
+}
+
+.result-summary,
+.search-result-heading {
+  align-items: center;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: space-between;
+}
+
+.result-summary {
+  background: var(--surface-muted);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 10px;
+}
+
+.result-summary span,
+.search-result-heading span {
+  color: var(--text-soft);
+  font-size: 0.84rem;
+  font-weight: 800;
+}
+
+.result-list {
+  display: grid;
+  gap: 10px;
+}
+
+.search-result-card {
+  background: var(--surface-muted);
+  border: 1px solid var(--border);
+  border-left: 4px solid var(--accent);
+  border-radius: 8px;
+  display: grid;
+  gap: 8px;
+  padding: 10px;
+}
+
+.search-result-card p {
+  color: var(--text-muted);
+  font-weight: 800;
+  margin: 0;
+}
+
+.search-result-card div:last-child {
+  color: var(--text);
+  line-height: 1.45;
+}
+
+.raw-output {
+  display: grid;
+  gap: 8px;
+}
+
+.raw-output pre {
+  background: var(--surface-muted);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  color: var(--text);
+  overflow: auto;
+  padding: 10px;
+  white-space: pre-wrap;
+}
+
 .drop-zone small,
 .panel-copy,
 .empty-state,

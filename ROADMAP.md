@@ -6,6 +6,34 @@ ContextOS Core follows one product principle:
 Context Selection is more important than Compression.
 ```
 
+## Final Product Boundary
+
+ContextOS Core ends at **Level 2: Desktop App**.
+
+The project is a portfolio-ready local-first context management system, not a platform expansion project.
+
+In scope:
+
+- CLI Core Engine
+- Desktop App
+- Drag and drop files/folders
+- Import, search, ask dry-run/mock, stats, benchmark
+- Token Savings Report
+- Local-first SQLite
+- BM25 retrieval
+- Rule-based compression
+
+Out of scope:
+
+- VS Code extension
+- Browser extension
+- Plugin/API layer
+- Cloud sync
+- Multi-user system
+- Agent runtime
+- Embeddings or vector database
+- Semantic search
+
 ## Current Foundation
 
 - Local-first Typer CLI
@@ -19,27 +47,31 @@ Context Selection is more important than Compression.
 - Mock AI adapter for local tests
 - Claude/OpenAI adapter placeholders
 - Developer commands: `doctor`, `version`, `config`, `debug`
-- v2 retrieval provider foundation with BM25 active and future placeholders
+- Benchmark command and Markdown performance report
+- Desktop MVP wrapper around the CLI
 
-## Near-Term Priorities
+## Final Polish Priorities
 
-1. Documentation and release alignment
-2. CLI output consolidation
-3. Retrieval provider routing while keeping BM25 active
-4. Packaging checks for wheel/sdist
-5. Windows CI for CLI behavior
+1. Keep documentation aligned with the Level 2 boundary
+2. Improve desktop drag/drop ergonomics
+3. Add screenshots for README and desktop docs
+4. Keep Python and desktop smoke tests passing
+5. Preserve local-first SQLite and BM25-only behavior
 
-## v2 Retrieval Direction
+## Retrieval Direction
 
-See [ROADMAP_v2.md](ROADMAP_v2.md) for the detailed retrieval roadmap.
+Retrieval remains BM25-only. Placeholder retrieval providers may exist in code for architecture clarity, but embeddings, vector search, semantic search, and hybrid ranking are out of scope for this project.
 
-Important: v2 retrieval foundation does not implement embeddings, vector search, or hybrid ranking yet.
+## Out of Scope
 
-## Out of Scope Unless Reapproved
-
-- FastAPI
+- FastAPI or hosted backend
 - PostgreSQL
 - Docker runtime dependency
 - Vector databases
 - Embeddings
+- Semantic search
 - Multi-user cloud features
+- VS Code extension
+- Browser extension
+- Plugin/API layer
+- Agent runtime

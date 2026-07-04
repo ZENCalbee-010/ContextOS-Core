@@ -14,7 +14,7 @@ Context Selection is more important than Compression.
 
 ContextOS Core is not a web app, cloud service, vector database, or hosted multi-user platform. It is a Python CLI that imports local files, chunks them, stores them in SQLite, retrieves relevant context with BM25, and builds prompts for local dry-run or adapter-based workflows.
 
-Current release: **v1.1.0** with Token Savings Report and a desktop app MVP.
+Current release line: **Level 2 Desktop App** with CLI Core Engine, Token Savings Report, Stats, and Benchmark reporting.
 
 ## Screenshots
 
@@ -124,6 +124,31 @@ More details:
 - [docs/DESKTOP_APP.md](docs/DESKTOP_APP.md)
 - [apps/desktop/README.md](apps/desktop/README.md)
 
+## Final Project Scope
+
+ContextOS Core intentionally ends at **Level 2: Desktop App**.
+
+In scope:
+
+- CLI Core Engine
+- Desktop App
+- Drag and drop files/folders
+- Import, search, ask dry-run/mock, stats, benchmark
+- Token Savings Report
+- Local-first SQLite
+- BM25 retrieval
+- Rule-based compression
+
+Out of scope:
+
+- VS Code extension
+- Browser extension
+- Plugin/API layer
+- Cloud sync or multi-user service
+- Agent runtime
+- Embeddings or vector database
+- Semantic search
+
 ## Architecture
 
 ![ContextOS architecture](docs/diagrams/contextos_pipeline.svg)
@@ -194,7 +219,6 @@ python -m contextos.cli.main --help
 - [SECURITY.md](SECURITY.md)
 - [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md)
 - [ROADMAP.md](ROADMAP.md)
-- [ROADMAP_v2.md](ROADMAP_v2.md)
 - [LICENSE](LICENSE)
 
 ## Current Limitations
@@ -205,4 +229,5 @@ python -m contextos.cli.main --help
 - Compression is rule-based only.
 - SQLite migrations are not implemented yet.
 - The system is single-user and local-first by design.
-- Desktop native drag/drop is not fully wired yet; the current MVP imports from a path field.
+- Desktop imports use the current DropZone/path workflow; native OS drag/drop behavior may vary by runtime.
+- VS Code extension, browser extension, plugin/API layer, cloud sync, multi-user workflows, agent runtime, embeddings, vector DB, and semantic search are out of scope.

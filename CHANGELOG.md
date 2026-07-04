@@ -6,6 +6,12 @@
 
 - `context benchmark` command for local benchmark reports.
 - Benchmark documentation in `docs/BENCHMARK.md`.
+- Final Level 2 Desktop App scope documentation.
+- Expanded benchmark sample notes for portfolio token savings demos.
+
+### Changed
+
+- README, roadmap, desktop docs, and limitations now mark VS Code extensions, browser extensions, plugin/API layers, cloud sync, multi-user systems, agent runtime, embeddings/vector DB, and semantic search as out of scope.
 
 ## v1.1.0
 

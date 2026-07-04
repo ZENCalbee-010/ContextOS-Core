@@ -1,6 +1,8 @@
 # ContextOS Desktop App
 
-The ContextOS Desktop App is a Level 2 GUI wrapper around the existing Python CLI.
+The ContextOS Desktop App is the final project level: Level 2.
+
+It is a GUI wrapper around the existing Python CLI.
 
 It does not rewrite the Python core. The desktop backend target is:
 
@@ -36,6 +38,29 @@ data/desktop.db
 3. Ask with dry-run or mock mode.
 4. Check token savings.
 5. View workspace stats.
+
+## Final Scope
+
+In scope:
+
+- Desktop import/search/ask/stats/benchmark workflows
+- Drag and drop files/folders
+- Dry-run and mock ask modes
+- Token Savings Report
+- Local-first SQLite storage
+- BM25 retrieval
+- Rule-based compression
+
+Out of scope:
+
+- VS Code extension
+- Browser extension
+- Plugin/API layer
+- Cloud sync
+- Multi-user system
+- Agent runtime
+- Embeddings or vector database
+- Semantic search
 
 ## Approved Commands
 
@@ -135,6 +160,6 @@ docs/screenshots/desktop-command-log.png
 
 ## Limitations
 
-- Native drag/drop is not fully wired yet; imports currently use a path field.
+- Desktop imports use the Level 2 DropZone/path workflow, with path entry available as a reliable fallback when native OS drag/drop behavior varies by runtime.
 - Tauri requires Rust/Cargo on the developer machine.
 - The desktop app does not add cloud sync, embeddings, vector search, or real AI API calls.

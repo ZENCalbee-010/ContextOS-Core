@@ -39,6 +39,14 @@ If `--db-path` already exists, the benchmark reuses it and relies on the existin
 
 For a clean run, choose a new database path or remove the old benchmark database manually.
 
+## Why Small Datasets May Show 0% Savings
+
+Token savings compares all imported chunk tokens with the selected context tokens for one ask dry-run.
+
+Small datasets can show `0.00%` savings when every imported chunk fits inside the ask token budget. That is expected and still correct: ContextOS did not need to discard any chunks.
+
+To demonstrate visible savings in a portfolio run, use the default `sample_data/benchmark` dataset after the portfolio benchmark notes are included, or use a larger local folder. Once the total imported tokens exceed the selected context budget or the retriever returns fewer chunks than the full corpus, saved tokens become visible.
+
 ## Report
 
 The generated Markdown report includes:

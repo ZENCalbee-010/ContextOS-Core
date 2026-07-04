@@ -23,6 +23,7 @@ export function SearchPanel({ onCommandComplete }: SearchPanelProps) {
 
   return (
     <Panel title="SearchPanel">
+      <p className="panel-copy">Search imported chunks before asking so you can inspect what BM25 retrieves.</p>
       <div className="form-row">
         <label>
           Query

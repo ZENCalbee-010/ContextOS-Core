@@ -14,6 +14,8 @@ Context Selection is more important than Compression.
 
 ContextOS Core is not a web app, cloud service, vector database, or hosted multi-user platform. It is a Python CLI that imports local files, chunks them, stores them in SQLite, retrieves relevant context with BM25, and builds prompts for local dry-run or adapter-based workflows.
 
+Current release: **v1.1.0** with Token Savings Report and a desktop app MVP.
+
 ## Screenshots
 
 CLI help placeholder:
@@ -27,6 +29,7 @@ Search results placeholder:
 ## Highlights
 
 - Local-first Typer CLI
+- Desktop app MVP under `apps/desktop`
 - SQLite repository layer
 - File readers for text, Markdown, code, PDF, and DOCX
 - Parser and chunking pipeline
@@ -35,6 +38,7 @@ Search results placeholder:
 - v2 retrieval provider interface with future placeholders
 - Rule-based light, medium, and aggressive compression
 - Token budget selection
+- Token Savings Report for ask flows
 - Context builder
 - Mock adapter for tests and dry local workflows
 - Developer commands: `doctor`, `version`, `config`, `debug`
@@ -69,6 +73,16 @@ context stats --db-path $db
 
 The demo stays local and does not call a real AI provider because it uses `--dry-run`.
 
+`context ask` prints a Token Savings Report:
+
+```text
+TOKEN SAVINGS REPORT
+Total available tokens: 12500
+Selected context tokens: 1850
+Saved tokens: 10650
+Savings percent: 85.20%
+```
+
 ## CLI Commands
 
 ```powershell
@@ -83,6 +97,31 @@ context version
 context config
 context debug
 ```
+
+## Desktop App MVP
+
+The desktop app is a Tauri + React + TypeScript wrapper around the existing Python CLI. It uses the same local-first core and the desktop database path `data/desktop.db`.
+
+```powershell
+cd apps\desktop
+npm install
+npm run dev
+npm run tauri dev
+```
+
+The desktop bridge only allows approved local commands:
+
+- `import`
+- `search`
+- `ask --dry-run`
+- `ask --adapter mock`
+- `optimize`
+- `stats`
+
+More details:
+
+- [docs/DESKTOP_APP.md](docs/DESKTOP_APP.md)
+- [apps/desktop/README.md](apps/desktop/README.md)
 
 ## Architecture
 
@@ -105,6 +144,7 @@ More architecture documentation:
 - [ContextOS_Architecture.md](ContextOS_Architecture.md)
 - [ARCHITECTURE_DIAGRAM.md](ARCHITECTURE_DIAGRAM.md)
 - [PROJECT_STRUCTURE.md](PROJECT_STRUCTURE.md)
+- [docs/DESKTOP_APP.md](docs/DESKTOP_APP.md)
 - [docs/RETRIEVAL_V2.md](docs/RETRIEVAL_V2.md)
 - [docs/PERFORMANCE.md](docs/PERFORMANCE.md)
 
@@ -119,6 +159,7 @@ Included:
 - Rule-based compression
 - Local single-user workflows
 - Mock adapter for tests and dry-runs
+- Desktop GUI wrapper for local CLI workflows
 
 Not included:
 
@@ -162,3 +203,4 @@ python -m contextos.cli.main --help
 - Compression is rule-based only.
 - SQLite migrations are not implemented yet.
 - The system is single-user and local-first by design.
+- Desktop native drag/drop is not fully wired yet; the current MVP imports from a path field.

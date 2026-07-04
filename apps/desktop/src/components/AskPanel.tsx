@@ -24,6 +24,7 @@ export function AskPanel({ onCommandComplete }: AskPanelProps) {
 
   return (
     <Panel title="AskPanel">
+      <p className="panel-copy">Dry-run shows the selected prompt without an AI call. Mock mode stays local.</p>
       <label>
         Question
         <textarea value={question} onChange={(event) => setQuestion(event.target.value)} />

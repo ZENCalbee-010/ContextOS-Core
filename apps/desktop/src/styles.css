@@ -71,12 +71,18 @@ label {
   display: flex;
   gap: 16px;
   justify-content: space-between;
-  margin-bottom: 20px;
+  margin-bottom: 16px;
 }
 
 .app-header h1 {
   font-size: 2rem;
   margin: 0;
+}
+
+.app-subtitle {
+  color: #52665e;
+  margin: 8px 0 0;
+  max-width: 720px;
 }
 
 .eyebrow {
@@ -96,6 +102,74 @@ label {
   font-size: 0.86rem;
   font-weight: 700;
   padding: 8px 12px;
+}
+
+.workflow-guide {
+  display: grid;
+  gap: 10px;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  margin-bottom: 16px;
+}
+
+.workflow-guide div,
+.status-banner {
+  background: #ffffff;
+  border: 1px solid #d7e1de;
+  border-radius: 8px;
+  box-shadow: 0 8px 24px rgba(23, 33, 28, 0.05);
+}
+
+.workflow-guide div {
+  display: grid;
+  gap: 5px;
+  padding: 12px;
+}
+
+.workflow-guide span {
+  align-items: center;
+  background: #155e63;
+  border-radius: 999px;
+  color: #ffffff;
+  display: inline-flex;
+  font-size: 0.8rem;
+  font-weight: 800;
+  height: 24px;
+  justify-content: center;
+  width: 24px;
+}
+
+.workflow-guide strong {
+  color: #17211c;
+}
+
+.workflow-guide p {
+  color: #66776f;
+  font-size: 0.86rem;
+  margin: 0;
+}
+
+.status-banner {
+  align-items: center;
+  border-left: 4px solid #8da39d;
+  display: flex;
+  gap: 10px;
+  margin-bottom: 16px;
+  padding: 10px 12px;
+}
+
+.status-banner.success {
+  border-left-color: #27845f;
+}
+
+.status-banner.error {
+  border-left-color: #b14b4b;
+}
+
+.status-banner span {
+  color: #52665e;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .workspace-grid {
@@ -152,6 +226,7 @@ label {
   align-items: center;
   border: 1px dashed #8cb1aa;
   border-radius: 8px;
+  background: #f7fbfa;
   display: grid;
   gap: 4px;
   justify-items: center;
@@ -170,6 +245,10 @@ label {
 .placeholder-list span,
 .metric-grid span {
   color: #66776f;
+}
+
+.panel-copy {
+  margin: 0;
 }
 
 .placeholder-list {
@@ -204,11 +283,52 @@ label {
   font-size: 1.2rem;
 }
 
+.metric-grid .primary-metric {
+  background: #eaf5f2;
+  border-color: #b7d0c9;
+  grid-column: 1 / -1;
+}
+
+.metric-grid .primary-metric strong {
+  color: #155e63;
+  font-size: 2rem;
+}
+
 .command-log {
   align-content: start;
   display: grid;
+  gap: 12px;
   max-height: calc(100vh - 128px);
   overflow: hidden;
+}
+
+.command-log-heading {
+  align-items: center;
+  display: flex;
+  justify-content: space-between;
+}
+
+.command-log-heading h2 {
+  margin: 0;
+}
+
+.command-log-heading span {
+  color: #66776f;
+  font-size: 0.86rem;
+  font-weight: 800;
+}
+
+.empty-state {
+  background: #f7fbfa;
+  border: 1px solid #e1e9e6;
+  border-radius: 8px;
+  display: grid;
+  gap: 4px;
+  padding: 12px;
+}
+
+.empty-state p {
+  margin: 0;
 }
 
 .log-list {
@@ -219,9 +339,11 @@ label {
 
 .log-entry {
   border-left: 4px solid #8da39d;
+  background: #fbfdfc;
+  border-radius: 8px;
   display: grid;
   gap: 8px;
-  padding: 10px 0 10px 10px;
+  padding: 10px;
 }
 
 .log-entry.success {
@@ -264,6 +386,10 @@ label {
     grid-template-columns: 1fr;
   }
 
+  .workflow-guide {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
   .command-log {
     max-height: none;
   }
@@ -280,7 +406,8 @@ label {
   }
 
   .form-row,
-  .metric-grid {
+  .metric-grid,
+  .workflow-guide {
     grid-template-columns: 1fr;
   }
 }

@@ -5,12 +5,12 @@ export function DocumentList() {
     <Panel title="DocumentList">
       <div className="placeholder-list">
         <div>
-          <strong>Imported documents</strong>
-          <span>Placeholder for indexed files from data/desktop.db</span>
+          <strong>No document browser yet</strong>
+          <span>Imported files are stored in data/desktop.db. Use Stats after import to confirm totals.</span>
         </div>
         <div>
-          <strong>Recent chunks</strong>
-          <span>Placeholder for source previews and metadata</span>
+          <strong>Next milestone</strong>
+          <span>This panel will list document paths, chunk counts, and source metadata.</span>
         </div>
       </div>
     </Panel>

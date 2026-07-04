@@ -23,8 +23,8 @@ export function DropZone({ onCommandComplete }: DropZoneProps) {
   return (
     <Panel title="DropZone">
       <div className="drop-zone">
-        <span>Drop files here</span>
-        <small>Phase 2 scaffold uses a path field until native drag/drop is wired.</small>
+        <span>Start here: import local context</span>
+        <small>Enter a file or folder path. Native drag/drop will be wired in a later phase.</small>
       </div>
       <label>
         Import path

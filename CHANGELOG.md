@@ -1,5 +1,33 @@
 # Changelog
 
+## v1.1.0
+
+Release theme: Token Savings Report + Desktop App MVP.
+
+### Added
+
+- Token Savings Report for `context ask`.
+- Token savings metadata stored in `conversation_history.metadata_json`.
+- `context stats` now shows the latest token savings when available.
+- Desktop app MVP under `apps/desktop` using React, TypeScript, and Tauri.
+- Safe desktop subprocess bridge for approved ContextOS CLI commands only.
+- Desktop panels for import, search, ask, optimize, stats, token savings, and command logs.
+- Desktop UX workflow guide, empty states, loading states, command status display, and manual QA checklist.
+- Desktop documentation in `docs/DESKTOP_APP.md`.
+
+### Changed
+
+- README and usage docs now cover token savings and desktop setup.
+- Desktop command log now separates stdout, stderr, and exit code.
+- Token savings output is parsed into the desktop `TokenSavingsPanel`.
+
+### Scope Notes
+
+- Python core remains CLI-first.
+- Desktop app wraps the existing CLI; it does not replace or rewrite the core.
+- BM25 remains the only active retrieval algorithm.
+- No embeddings, vector database, cloud sync, or real AI API calls were added.
+
 ## v1.0.0
 
 Initial ContextOS Core MVP.

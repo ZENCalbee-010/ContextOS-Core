@@ -25,6 +25,7 @@ export function OptimizePanel({ onCommandComplete }: OptimizePanelProps) {
 
   return (
     <Panel title="OptimizePanel">
+      <p className="panel-copy">Re-run stored rule-based compression metadata for one imported document.</p>
       <div className="form-row">
         <label>
           Document id or filepath

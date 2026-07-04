@@ -50,6 +50,27 @@ Build the desktop app:
 npm run tauri build
 ```
 
+## Screenshots
+
+Screenshots are not committed yet. To capture release screenshots:
+
+1. Run `npm run tauri dev`.
+2. Import `sample_data`.
+3. Search for `context selection`.
+4. Ask `What is ContextOS?` with dry-run enabled.
+5. Capture:
+   - Full workspace with workflow guide
+   - TokenSavingsPanel after ask
+   - CommandLog with stdout/stderr/exit code
+
+Suggested paths:
+
+```text
+docs/screenshots/desktop-workspace.png
+docs/screenshots/desktop-token-savings.png
+docs/screenshots/desktop-command-log.png
+```
+
 ## Wired Commands
 
 The desktop app calls the Python CLI through a Tauri command named `run_context_command`.
@@ -98,6 +119,19 @@ The bridge returns `stdout`, `stderr`, and `exitCode` separately for the command
    - Optimize document `1` with `medium`
 
 5. Confirm `CommandLog` shows stdout, stderr, and exit code, and `TokenSavingsPanel` updates after ask output contains a token savings report.
+
+## Manual QA Checklist
+
+- App opens without requiring a real AI API key.
+- Workflow guide makes the order clear: import, search, ask, savings, stats.
+- Empty CommandLog explains what to do next.
+- Importing an invalid path shows an error entry.
+- Searching an empty query is blocked with a clear error entry.
+- Asking an empty question is blocked with a clear error entry.
+- Ask dry-run does not call a real AI provider.
+- Ask mock displays stdout and updates TokenSavingsPanel when savings output exists.
+- Optimize supports only light, medium, and aggressive.
+- Stats command writes workspace totals to CommandLog.
 
 ## Notes
 

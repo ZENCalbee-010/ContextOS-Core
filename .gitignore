@@ -21,3 +21,8 @@ data/*
 Thumbs.db
 .idea/
 .vscode/
+
+# Desktop app local dependencies/build output
+apps/desktop/node_modules/
+apps/desktop/dist/
+apps/desktop/src-tauri/target/

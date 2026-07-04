@@ -19,6 +19,7 @@ from pathlib import Path
 
 import typer
 
+from contextos.cli.console import print_success, progress_iter
 from contextos.config import DEFAULT_DB_PATH
 # FileIndexer: ตัวจัดการการแบ่งไฟล์เป็น chunk และจัดเก็บลง DB
 # IndexResult: ผลลัพธ์จากการ index แต่ละไฟล์ (status, chunk_count, token_count)
@@ -60,7 +61,10 @@ def import_context(
     indexer = FileIndexer(repository, max_tokens_per_chunk=max_tokens)
 
     # index แต่ละไฟล์: อ่าน -> แบ่ง chunk -> เก็บลง DB
-    results = [indexer.index_file(file_path) for file_path in files]
+    results = [
+        indexer.index_file(file_path)
+        for file_path in progress_iter(files, "Importing files")
+    ]
 
     # นับสรุปผลลัพธ์
     imported = _count(results, "imported")
@@ -69,6 +73,7 @@ def import_context(
     total_tokens = sum(result.token_count for result in results)
 
     # แสดงสรุปให้ผู้ใช้ทราบ
+    print_success("Import complete.")
     typer.echo(f"Imported files: {imported}")
     typer.echo(f"Skipped files: {skipped}")
     typer.echo(f"Total chunks: {total_chunks}")
